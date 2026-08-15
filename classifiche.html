@@ -76,8 +76,18 @@
             <li><a href="film.html">Film</a></li>
             <li><a href="serie-tv.html">Serie Tv</a></li>
             <li><a href="recensioni.html">Recensioni</a></li>
-            <li class="active"><a href="classifiche.html">Classifiche</a></li>
-            <li><a href="articoli.html">Articoli</a></li>
+            <li class="mobile-dropdown-item active open">
+                <button type="button" class="mobile-dropdown-toggle" aria-label="Menu Articoli" aria-expanded="true">
+                    <span>Articoli</span>
+                    <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                </button>
+                <ul class="mobile-submenu">
+                    <li><a href="articoli.html">Tutti gli Articoli</a></li>
+                    <li class="active"><a href="classifiche.html">Classifiche</a></li>
+                    <li><a href="articoli.html?filter=eventi">Eventi &amp; Festival</a></li>
+                    <li><a href="articoli.html?filter=news">Ultime News</a></li>
+                </ul>
+            </li>
             <li><a href="chi-siamo.html">Chi Siamo</a></li>
         </ul>
         <a href="contatti.html" class="drawer-cta">
