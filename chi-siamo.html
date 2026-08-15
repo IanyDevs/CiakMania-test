@@ -278,109 +278,125 @@
         let allUsers = [];
         let allArticles = [];
 
-        // Load articles count per author
-        CiakAPI.getArticles()
-            .then(d => { allArticles = d && d.articles || []; });
-
-        document.addEventListener('DOMContentLoaded', () => {
+        async function loadRedazione() {
             const grid = document.getElementById('redazione-grid');
             if (!grid) return;
 
-            fetch('api/api.php?action=get_users')
-                .then(res => res.json())
-                .then(data => {
-                    allUsers = data.users || [];
-                    if (allUsers.length === 0) {
-                        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center;">Nessun redattore trovato.</p>';
-                        return;
-                    }
+            try {
+                const [usersRes, articlesRes] = await Promise.all([
+                    fetch('api/api.php?action=get_users').then(r => r.json()),
+                    CiakAPI.getArticles()
+                ]);
 
-                    grid.innerHTML = allUsers.map((user, idx) => {
-                        const initials = (user.avatar || user.name.substring(0, 2)).toUpperCase();
-                        const avatarContent = user.profile_image
-                            ? `<img src="${user.profile_image}" alt="${user.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.outerHTML='<span style=\\'font-size:36px; font-weight:800; font-family:var(--font-editorial); color:#FFF;\\'>${initials}</span>'">`
-                            : `<span style="font-size:36px; font-weight:800; font-family:var(--font-editorial); color:#FFF;">${initials}</span>`;
+                allUsers = (usersRes && usersRes.users) || [];
+                allArticles = (articlesRes && articlesRes.articles) || [];
 
-                        return `
-                        <div class="redazione-card"
-                            data-user-idx="${idx}"
-                            onclick="openAuthorModal(${idx})"
-                            style="
-                                background: #FFFFFF;
-                                border-radius: 20px;
-                                border: 1px solid rgba(22,25,24,0.05);
-                                overflow: hidden;
-                                cursor: pointer;
-                                box-shadow: 0 4px 24px rgba(0,0,0,0.04);
-                                transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-                                display: flex; flex-direction: column;
-                            "
-                            onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 40px rgba(127,2,113,0.12)'; this.style.borderColor='rgba(127,2,113,0.15)';"
-                            onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 24px rgba(0,0,0,0.04)'; this.style.borderColor='rgba(22,25,24,0.05)';"
-                        >
-                            <!-- Card top colored strip with avatar -->
+                if (allUsers.length === 0) {
+                    grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center;">Nessun redattore trovato.</p>';
+                    return;
+                }
+
+                grid.innerHTML = allUsers.map((user, idx) => {
+                    const initials = (user.avatar || user.name.substring(0, 2)).toUpperCase();
+                    const avatarContent = user.profile_image
+                        ? `<img src="${user.profile_image}" alt="${user.name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.outerHTML='<span style=\\'font-size:36px; font-weight:800; font-family:var(--font-editorial); color:#FFF;\\'>${initials}</span>'">`
+                        : `<span style="font-size:36px; font-weight:800; font-family:var(--font-editorial); color:#FFF;">${initials}</span>`;
+
+                    // Calculate real article count dynamically
+                    const authorName = (user.name || '').trim().toLowerCase();
+                    const count = allArticles.filter(art => {
+                        const artAuthor = (art.author || '').trim().toLowerCase();
+                        return art.status === 'pubblicato' && (artAuthor === authorName || artAuthor.includes(authorName) || authorName.includes(artAuthor));
+                    }).length;
+
+                    return `
+                    <div class="redazione-card"
+                        data-user-idx="${idx}"
+                        onclick="openAuthorModal(${idx})"
+                        style="
+                            background: #FFFFFF;
+                            border-radius: 20px;
+                            border: 1px solid rgba(22,25,24,0.05);
+                            overflow: hidden;
+                            cursor: pointer;
+                            box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+                            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+                            display: flex; flex-direction: column;
+                        "
+                        onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 16px 40px rgba(127,2,113,0.12)'; this.style.borderColor='rgba(127,2,113,0.15)';"
+                        onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 24px rgba(0,0,0,0.04)'; this.style.borderColor='rgba(22,25,24,0.05)';"
+                    >
+                        <!-- Card top colored strip with avatar -->
+                        <div style="
+                            height: 120px;
+                            background: linear-gradient(135deg, var(--color-brand) 0%, #3D0136 100%);
+                            position: relative;
+                            flex-shrink: 0;
+                        ">
                             <div style="
-                                height: 120px;
-                                background: linear-gradient(135deg, var(--color-brand) 0%, #3D0136 100%);
-                                position: relative;
-                                flex-shrink: 0;
+                                position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
+                                width: 80px; height: 80px; border-radius: 50%;
+                                border: 4px solid #FFFFFF;
+                                box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+                                overflow: hidden;
+                                background: var(--color-brand);
+                                display: flex; align-items: center; justify-content: center;
                             ">
-                                <div style="
-                                    position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%);
-                                    width: 80px; height: 80px; border-radius: 50%;
-                                    border: 3px solid #FFF; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-                                    background: var(--color-brand);
-                                    display: flex; align-items: center; justify-content: center;
-                                    overflow: hidden;
-                                ">${avatarContent}</div>
+                                ${avatarContent}
                             </div>
+                        </div>
 
-                            <!-- Card body -->
-                            <div style="padding: 56px 24px 32px 24px; text-align: center; flex-grow: 1; display: flex; flex-direction: column;">
-                                <h3 style="font-family: var(--font-editorial); font-size: 22px; margin: 0 0 8px 0; color: #161918; font-weight: 700;">${user.name}</h3>
-                                <div style="display: flex; justify-content: center; margin-bottom: 16px;">
-                                    <span style="
-                                        font-size: 10.5px; text-transform: uppercase; letter-spacing: 2px;
-                                        font-weight: 800; color: #601f5e;
-                                        background: linear-gradient(135deg, rgba(96, 31, 94, 0.08) 0%, rgba(234, 189, 34, 0.12) 100%);
-                                        border: 1px solid rgba(96, 31, 94, 0.2);
-                                        box-shadow: 0 2px 8px rgba(96, 31, 94, 0.06);
-                                        padding: 4px 14px; border-radius: 50px;
-                                        display: inline-flex; align-items: center; gap: 5px;
-                                    ">
-                                        <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); display: inline-block;"></span>
-                                        ${user.role || 'Redattore'}
-                                    </span>
-                                </div>
-                                <p style="
-                                    font-size: 13.5px; color: var(--color-text-muted); line-height: 1.6;
-                                    margin: 0 0 auto 0;
-                                    overflow: hidden;
-                                    display: -webkit-box;
-                                    -webkit-line-clamp: 3;
-                                    -webkit-box-orient: vertical;
-                                ">${user.bio || 'Appassionato di cinema e serialità televisiva.'}</p>
+                        <!-- Card Body -->
+                        <div style="padding: 52px 28px 28px 28px; text-align: center; display: flex; flex-direction: column; flex-grow: 1;">
+                            <h3 style="
+                                font-family: var(--font-editorial);
+                                font-size: 22px; font-weight: 700;
+                                color: var(--color-text-main);
+                                margin: 0 0 6px 0;
+                            ">${user.name}</h3>
 
-                                <!-- Scopri di più CTA -->
-                                <div style="
-                                    margin-top: 24px; padding-top: 20px;
-                                    border-top: 1px solid var(--bg-tertiary);
-                                    display: flex; align-items: center; justify-content: center; gap: 6px;
+                            <div style="margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span style="
+                                    display: inline-flex; align-items: center; gap: 6px;
                                     font-size: 11px; font-weight: 800; text-transform: uppercase;
                                     letter-spacing: 1.5px; color: var(--color-brand);
+                                    background: rgba(127, 2, 113, 0.06);
+                                    padding: 4px 12px; border-radius: 50px;
                                 ">
-                                    Scopri di più
-                                    <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
-                                </div>
+                                    <span style="width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); display: inline-block;"></span>
+                                    ${user.role || 'Redattore'}
+                                </span>
                             </div>
-                        </div>`;
-                    }).join('');
-                })
-                .catch(err => {
-                    console.error('Errore caricamento redazione:', err);
-                    document.getElementById('redazione-grid').innerHTML = '<p style="color:var(--color-text-muted); text-align:center;">Errore nel caricamento della redazione.</p>';
-                });
-        });
+                            <p style="
+                                font-size: 13.5px; color: var(--color-text-muted); line-height: 1.6;
+                                margin: 0 0 auto 0;
+                                overflow: hidden;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 3;
+                                -webkit-box-orient: vertical;
+                            ">${user.bio || 'Appassionato di cinema e serialità televisiva.'}</p>
+
+                            <!-- Scopri di più CTA -->
+                            <div style="
+                                margin-top: 24px; padding-top: 20px;
+                                border-top: 1px solid var(--bg-tertiary);
+                                display: flex; align-items: center; justify-content: center; gap: 6px;
+                                font-size: 11px; font-weight: 800; text-transform: uppercase;
+                                letter-spacing: 1.5px; color: var(--color-brand);
+                            ">
+                                Scopri di più (${count} articoli)
+                                <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor;"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (err) {
+                console.error('Errore caricamento redazione:', err);
+                grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center;">Errore nel caricamento della redazione.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadRedazione);
 
         // --- AUTHOR MODAL LOGIC ---
         function openAuthorModal(userIdx) {
@@ -405,12 +421,17 @@
             document.getElementById('modal-author-role').textContent = user.role || 'Redattore';
             document.getElementById('modal-author-bio').textContent = user.bio || 'Questo autore non ha ancora inserito una biografia dettagliata.';
 
-            // Stats directly from DB
-            const countFromDB = parseInt(user.published_articles_count, 10) || 0;
+            // Calculate actual published article count for this specific author
+            const authorName = (user.name || '').trim().toLowerCase();
+            const actualCount = allArticles.filter(art => {
+                const artAuthor = (art.author || '').trim().toLowerCase();
+                return art.status === 'pubblicato' && (artAuthor === authorName || artAuthor.includes(authorName) || authorName.includes(artAuthor));
+            }).length;
+
             const statsEl = document.getElementById('modal-author-stats');
             statsEl.innerHTML = `
                 <div style="flex:1; min-width:120px; background:var(--bg-secondary); border-radius:12px; padding:16px; text-align:center;">
-                    <div style="font-family:var(--font-editorial); font-size:28px; font-weight:800; color:var(--color-brand); line-height:1;">${countFromDB}</div>
+                    <div style="font-family:var(--font-editorial); font-size:28px; font-weight:800; color:var(--color-brand); line-height:1;">${actualCount}</div>
                     <div style="font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--color-text-muted); margin-top:4px;">Articoli Pubblicati</div>
                 </div>
                 <div style="flex:1; min-width:120px; background:var(--bg-secondary); border-radius:12px; padding:16px; text-align:center;">
