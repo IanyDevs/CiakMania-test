@@ -646,10 +646,73 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (bodyDiv) {
                     bodyDiv.innerHTML = activeArt.content || '';
 
-                    // Assicura che tutti i link all'interno del testo siano sempre cliccabili e si aprano in una nuova scheda
+                    // Trasforma automaticamente link a YouTube, Vimeo o file video in player video incorporati inline riproducibili direttamente dall'articolo
+                    const extractYT = (url) => {
+                        if (!url) return '';
+                        const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|.+&v=))([\w-]{11})/);
+                        return m ? m[1] : '';
+                    };
+
+                    const extractVimeo = (url) => {
+                        if (!url) return '';
+                        const m = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/);
+                        return m ? m[3] : '';
+                    };
+
+                    // Controllo e conversione di link isolati a video
                     bodyDiv.querySelectorAll('a').forEach(link => {
+                        const href = (link.getAttribute('href') || '').trim();
+                        const text = (link.textContent || '').trim();
+
+                        const ytId = extractYT(href);
+                        if (ytId && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                            const videoWrapper = document.createElement('div');
+                            videoWrapper.className = 'video-container';
+                            videoWrapper.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+                            link.replaceWith(videoWrapper);
+                            return;
+                        }
+
+                        const vimeoId = extractVimeo(href);
+                        if (vimeoId && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                            const videoWrapper = document.createElement('div');
+                            videoWrapper.className = 'video-container';
+                            videoWrapper.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+                            link.replaceWith(videoWrapper);
+                            return;
+                        }
+
+                        if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(href) && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                            const vidEl = document.createElement('video');
+                            vidEl.controls = true;
+                            vidEl.playsInline = true;
+                            vidEl.preload = 'metadata';
+                            vidEl.src = href;
+                            link.replaceWith(vidEl);
+                            return;
+                        }
+
+                        // Tutti gli altri link normali si aprono in sicurezza
                         link.setAttribute('target', '_blank');
                         link.setAttribute('rel', 'noopener noreferrer');
+                    });
+
+                    // Assicura controlli e inline playback per tutti i tag video e iframe presenti
+                    bodyDiv.querySelectorAll('video').forEach(vid => {
+                        vid.controls = true;
+                        vid.playsInline = true;
+                        vid.setAttribute('preload', 'metadata');
+                    });
+
+                    bodyDiv.querySelectorAll('iframe').forEach(ifr => {
+                        ifr.setAttribute('allowfullscreen', 'true');
+                        ifr.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+                        if (!ifr.closest('.video-container')) {
+                            const container = document.createElement('div');
+                            container.className = 'video-container';
+                            ifr.parentNode.insertBefore(container, ifr);
+                            container.appendChild(ifr);
+                        }
                     });
 
                     if (activeArt.rating) {
