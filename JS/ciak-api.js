@@ -218,15 +218,59 @@ window.fetch = async function (input, init) {
                     const clean = { ...bodyData };
                     const id = clean.id;
                     delete clean.id;
+
+                    // Ensure rating is float or null
+                    if (clean.rating !== undefined && clean.rating !== null && clean.rating !== '') {
+                        clean.rating = parseFloat(clean.rating) || null;
+                    } else {
+                        clean.rating = null;
+                    }
+
+                    // Format tags as text / JSON string if needed
+                    if (Array.isArray(clean.tags)) {
+                        clean.tags = JSON.stringify(clean.tags);
+                    }
+
+                    // Ensure date is present
+                    if (!clean.date) {
+                        const monthsIt = {
+                            0: 'Gennaio', 1: 'Febbraio', 2: 'Marzo', 3: 'Aprile',
+                            4: 'Maggio', 5: 'Giugno', 6: 'Luglio', 7: 'Agosto',
+                            8: 'Settembre', 9: 'Ottobre', 10: 'Novembre', 11: 'Dicembre'
+                        };
+                        const now = new Date();
+                        clean.date = `${now.getDate()} ${monthsIt[now.getMonth()]} ${now.getFullYear()}`;
+                    }
+
+                    // Ensure slug is present
+                    if (!clean.slug) {
+                        clean.slug = (clean.title || 'articolo')
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g, '-')
+                            .replace(/^-+|-+$/g, '') + '-' + Date.now();
+                    }
+
                     if (id) {
                         const { data, error } = await client.from('articles').update(clean).eq('id', id).select();
-                        if (!error) return makeJsonResponse({ status: 'success', message: 'Articolo aggiornato!', article: data[0] });
+                        if (!error && data && data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo aggiornato!', article: data[0] });
+                        }
+                        if (error) {
+                            console.error('Supabase update error:', error);
+                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante l\'aggiornamento.' });
+                        }
                     } else {
                         const { data, error } = await client.from('articles').insert([clean]).select();
-                        if (!error) return makeJsonResponse({ status: 'success', message: 'Articolo creato!', article: data[0] });
+                        if (!error && data && data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo creato!', article: data[0] });
+                        }
+                        if (error) {
+                            console.error('Supabase insert error:', error);
+                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante l\'inserimento.' });
+                        }
                     }
                 }
-                return makeJsonResponse({ status: 'error', message: 'Salvataggio non riuscito.' });
+                return makeJsonResponse({ status: 'error', message: 'Connessione a Supabase non riuscita.' });
             }
 
             // 10. GET NOTIFICATIONS
