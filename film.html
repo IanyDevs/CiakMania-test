@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema e Film | Recensioni e Anteprime - Ciak Mania Magazine</title>
+    <meta name="description" content="Tutte le recensioni dei film in uscita, anticipazioni, trailer e approfondimenti d'autore sul mondo del grande schermo.">
+    
+    <!-- Google Fonts Preconnect & High-Priority Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&family=Dancing+Script:wght@600;700&family=Alex+Brush&display=block" rel="stylesheet">
+    
+    <!-- CSS stylesheet -->
+    <link rel="stylesheet" href="CSS/style.css?v=2.0">
+</head>
+<body>
+
+    <!-- Header / Navbar Capsule -->
+    <header class="header-wrapper">
+        <nav class="navbar-capsule">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="ASSETS/Logo_no_bg.webp" alt="Ciak Mania Magazine" class="navbar-logo-img">
+                    <span class="logo-text">Ciak<span>Mania</span></span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html">Home</a></li>
+                <li class="nav-item active"><a href="film.html">Film</a></li>
+                <li class="nav-item"><a href="serie-tv.html">Serie Tv</a></li>
+                <li class="nav-item"><a href="recensioni.html">Recensioni</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="articoli.html">
+                        Articoli
+                        <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="articoli.html">Tutti gli Articoli</a>
+                        <a href="classifiche.html">Classifiche </a>
+                        <a href="articoli.html?filter=eventi">Eventi & Festival</a>
+                        <a href="articoli.html?filter=news">Ultime News</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="chi-siamo.html">Chi Siamo</a></li>
+            </ul>
+            <div class="nav-right-actions">
+                <button type="button" class="search-btn-trigger" onclick="openSearch()" aria-label="Cerca">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+                <a href="contatti.html" class="nav-cta">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                    Contatti
+                </a>
+                <button class="mobile-toggle" aria-label="Apri Menu">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav-drawer">
+        <button class="drawer-close" aria-label="Chiudi Menu">&times;</button>
+        <ul class="mobile-menu-links">
+            <li><a href="index.html">Home</a></li>
+            <li class="active"><a href="film.html">Film</a></li>
+            <li><a href="serie-tv.html">Serie Tv</a></li>
+            <li><a href="recensioni.html">Recensioni</a></li>
+            <li><a href="articoli.html">Articoli</a></li>
+            <li><a href="chi-siamo.html">Chi Siamo</a></li>
+        </ul>
+        <a href="contatti.html" class="drawer-cta">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            Contatti
+        </a>
+    </div>
+
+    <!-- main content container -->
+    <main class="container" style="margin-top: 140px; margin-bottom: 60px;">
+        <div class="ciak-graphic-container" style="margin-bottom: 25px;">
+            <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/02_cinema_film.png" alt="Sezione 02 Cinema Film" class="ciak-graphic-heading" style="max-width: 350px;">
+        </div>
+        
+        <div class="main-content-layout" style="padding: 0;">
+            <section class="articles-column">
+                <!-- Sottocategoria: Ultime Recensioni Film -->
+                <div class="cinematic-header-wrapper" id="film-recensioni-header" style="margin-bottom: 24px;">
+                    <div class="cinematic-title-composition">
+                        <div class="cinematic-title-wrap">
+                            <span class="cinematic-subtitle">OUR LATEST VERDICTS</span>
+                            <h2 class="cinematic-main-title" style="font-size: 52px !important;">Ultime Recensioni</h2>
+                        </div>
+                        <a href="recensioni.html" style="font-size: 13px; color: #7F0271; font-weight: 700; text-decoration: none;">Vedi tutte le recensioni &rarr;</a>
+                    </div>
+                </div>
+                <div class="cards-grid" id="film-recensioni-grid" style="margin-bottom: 50px;">
+                    <!-- Popolated dynamically (max 3 reviews) -->
+                </div>
+
+                <!-- Griglia Articoli Film -->
+                <div class="cards-grid" id="film-articles-grid">
+                    <!-- Popolated dynamically -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Global Search Modal Overlay -->
+    <div id="search-modal" class="search-modal-overlay">
+        <div class="search-modal-card">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Cerca film, serie, articoli..." autocomplete="off">
+                <button type="button" class="close-btn" onclick="closeSearch()">&times;</button>
+            </div>
+            <div id="search-results-list" class="search-live-results"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="footer-logo-brand">
+                        <img src="ASSETS/Logo_no_bg.webp" alt="CiakMania Logo" class="footer-logo-img">
+                        <h3 class="logo-main">Ciak<span>Mania</span></h3>
+                    </a>
+                    <p>La tua dose quotidiana di grande cinema, recensioni ed esclusive dal mondo delle serie TV e dell'intrattenimento.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Sezioni</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="film.html">Film</a></li>
+                        <li><a href="serie-tv.html">Serie TV</a></li>
+                        <li><a href="recensioni.html">Recensioni</a></li>
+                        <li><a href="articoli.html">Articoli</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Info Legali</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="admin.html" target="_blank" rel="noopener noreferrer" style="font-weight:600; color:var(--color-accent);">Area Amministrativa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-newsletter-col">
+                    <h3>Newsletter</h3>
+                    <p>Ricevi le migliori notizie, recensioni ed esclusive nella tua inbox.</p>
+                    <form class="footer-newsletter-form" onsubmit="event.preventDefault(); alert('Grazie per l\'iscrizione!');">
+                        <div class="footer-input-group">
+                            <input type="email" class="footer-news-input" placeholder="La tua email..." required>
+                            <button type="submit" class="footer-news-btn">Iscriviti</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Ciak Mania. Tutti i diritti riservati.</span>
+                <span>Sito web realizzato da <a href="https://ianyydevs.altervista.org" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); font-weight: 700; text-decoration: none;">IanyDevs</a> per gli amanti del cinema.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS file & Supabase API Bridge -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="JS/ciak-api.js"></script>
+    <script src="JS/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const reviewsGrid = document.getElementById('film-recensioni-grid');
+            const reviewsHeader = document.getElementById('film-recensioni-header');
+            const articlesGrid = document.getElementById('film-articles-grid');
+
+            CiakAPI.getArticles().then(data => {
+                if (data && data.status === 'success') {
+                    const allPublished = (data.articles || []).filter(art => art.status === 'pubblicato');
+                    
+                    // All Film articles (case-insensitive & whitespace-safe)
+                    const filmArticles = allPublished.filter(art => {
+                        const cat = (art.category || '').toLowerCase().trim();
+                        const tags = (art.tags || '').toLowerCase();
+                        return cat === 'film' || cat === 'cinema' || tags.includes('film');
+                    });
+
+                    // Top 3 Film reviews
+                    const filmReviews = allPublished.filter(art => {
+                        const cat = (art.category || '').toLowerCase().trim();
+                        const tags = (art.tags || '').toLowerCase();
+                        const title = (art.title || '').toLowerCase();
+                        const isFilm = cat === 'film' || cat === 'cinema' || tags.includes('film') || title.includes('film');
+                        const isReview = (art.rating !== null && art.rating !== '') || cat === 'recensioni' || tags.includes('recensio');
+                        return isFilm && isReview;
+                    }).slice(0, 3);
+
+                    // Render Subcategory Film Reviews (max 3)
+                    if (reviewsGrid) {
+                        reviewsGrid.innerHTML = '';
+                        if (filmReviews.length === 0) {
+                            if (reviewsHeader) reviewsHeader.style.display = 'none';
+                            reviewsGrid.style.display = 'none';
+                        } else {
+                            filmReviews.forEach(art => renderArticleCard(art, reviewsGrid));
+                        }
+                    }
+
+                    // Render All Film Articles
+                    if (articlesGrid) {
+                        articlesGrid.innerHTML = '';
+                        if (filmArticles.length === 0) {
+                            articlesGrid.innerHTML = '<p style="color:var(--color-text-muted); grid-column: 1/-1; text-align:center; padding: 40px 0;">Nessun articolo trovato per la categoria Film.</p>';
+                        } else {
+                            filmArticles.forEach(art => renderArticleCard(art, articlesGrid));
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

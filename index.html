@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciak Mania Magazine | Film, Serie TV e Recensioni</title>
+    <meta name="description" content="Il magazine online di riferimento per gli amanti del cinema e delle serie TV. Recensioni, interviste esclusive e approfondimenti.">
+    
+    <!-- Google Fonts Preconnect & High-Priority Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&family=Dancing+Script:wght@600;700&family=Alex+Brush&display=block" rel="stylesheet">
+    
+    <!-- CSS stylesheet -->
+    <link rel="stylesheet" href="CSS/style.css?v=2.0">
+</head>
+<body>
+
+    <!-- Header / Navbar Capsule -->
+    <header class="header-wrapper">
+        <nav class="navbar-capsule">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="ASSETS/Logo_no_bg.webp" alt="Ciak Mania Magazine" class="navbar-logo-img">
+                    <span class="logo-text">Ciak<span>Mania</span></span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active"><a href="index.html">Home</a></li>
+                <li class="nav-item"><a href="film.html">Film</a></li>
+                <li class="nav-item"><a href="serie-tv.html">Serie Tv</a></li>
+                <li class="nav-item"><a href="recensioni.html">Recensioni</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="articoli.html">
+                        Articoli
+                        <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="articoli.html">Tutti gli Articoli</a>
+                        <a href="classifiche.html">Classifiche </a>
+                        <a href="articoli.html?filter=eventi">Eventi & Festival</a>
+                        <a href="articoli.html?filter=news">Ultime News</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="chi-siamo.html">Chi Siamo</a></li>
+            </ul>
+            <div class="nav-right-actions">
+                <button type="button" class="search-btn-trigger" onclick="openSearch()" aria-label="Cerca">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+                <a href="contatti.html" class="nav-cta">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                    Contatti
+                </a>
+                <button class="mobile-toggle" aria-label="Apri Menu">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav-drawer">
+        <button class="drawer-close" aria-label="Chiudi Menu">&times;</button>
+        <ul class="mobile-menu-links">
+            <li class="active"><a href="index.html">Home</a></li>
+            <li><a href="film.html">Film</a></li>
+            <li><a href="serie-tv.html">Serie Tv</a></li>
+            <li><a href="recensioni.html">Recensioni</a></li>
+            <li><a href="articoli.html">Articoli</a></li>
+            <li><a href="chi-siamo.html">Chi Siamo</a></li>
+        </ul>
+        <a href="contatti.html" class="drawer-cta">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            Contatti
+        </a>
+    </div>
+
+    <!-- Content Sections layout -->
+    <main class="container" style="margin-top: 140px; margin-bottom: 60px;">
+        <div class="main-content-layout">
+            
+            <!-- Main Feed Column -->
+            <section class="articles-column">
+                <!-- 01: Sezione Ultimi Articoli -->
+                <div class="ciak-graphic-container" style="margin-bottom: 20px;">
+                    <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/01_ultimi_articoli.png" alt="01 Ultimi Articoli" class="ciak-graphic-heading" style="max-width: 320px;">
+                </div>
+                <div class="cards-grid" id="ultime-notizie-grid">
+                    <!-- Loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- 08: Classifiche (Vertical Sidebar Widget) -->
+                <div class="classifiche-widget">
+                    <div class="ciak-graphic-container" style="margin-bottom: 14px;">
+                        <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/08_classifiche_top10.png" alt="08 Most Popular Top 10 Classifiche" class="ciak-graphic-heading" style="max-width: 250px;">
+                    </div>
+                    <div class="classifiche-list" id="classifiche-list-container">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                </div>
+            </aside>
+            
+        </div>
+
+        <!-- 05: Sezione Recensioni -->
+        <section class="reviews-section-wrapper">
+            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
+                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/05_recensioni.png" alt="05 Recensioni" class="ciak-graphic-heading" style="max-width: 330px;">
+            </div>
+            <div class="cards-grid" id="recensioni-highlights-grid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- 07: Sezione Prossime Uscite -->
+        <section class="piu-letti-section-wrapper" id="piu-letti-section" style="margin: 45px 0 50px 0;">
+            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
+                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/07_prossime_uscite.png" alt="07 Prossime Uscite" class="ciak-graphic-heading" style="max-width: 330px;">
+            </div>
+            <div class="classifiche-ranking-grid" id="classifiche-grid-container">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- 06: Sezione Approfondimenti -->
+        <section class="events-section-wrapper" id="events-section" style="margin: 45px 0 50px 0;">
+            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
+                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/06_approfondimenti.png" alt="06 Approfondimenti" class="ciak-graphic-heading" style="max-width: 340px;">
+            </div>
+            <div class="cards-grid" id="events-grid-container">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- 07: Sezione Trailer -->
+        <section style="margin: 35px 0 60px 0;">
+            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
+                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/07_trailer_official.png" alt="07 Behind The Scenes Trailer - Guarda i trailer ufficiali" class="ciak-graphic-heading" style="max-width: 320px;">
+            </div>
+            <div class="trailers-grid" id="trailers-grid-container">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Global Search Modal Overlay -->
+    <div id="search-modal" class="search-modal-overlay">
+        <div class="search-modal-card">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Cerca film, serie, articoli..." autocomplete="off">
+                <button type="button" class="close-btn" onclick="closeSearch()">&times;</button>
+            </div>
+            <div id="search-results-list" class="search-live-results"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="footer-logo-brand">
+                        <img src="ASSETS/Logo_no_bg.webp" alt="CiakMania Logo" class="footer-logo-img">
+                        <h3 class="logo-main">Ciak<span>Mania</span></h3>
+                    </a>
+                    <p>La tua dose quotidiana di grande cinema, recensioni ed esclusive dal mondo delle serie TV e dell'intrattenimento.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-btn" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                        </a>
+                        <a href="#" class="social-btn" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0 3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0 3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Sezioni</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="film.html">Film</a></li>
+                        <li><a href="serie-tv.html">Serie TV</a></li>
+                        <li><a href="recensioni.html">Recensioni</a></li>
+                        <li><a href="articoli.html">Articoli</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Info Legali</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="admin.html" target="_blank" rel="noopener noreferrer" style="font-weight:600; color:var(--color-accent);">Area Amministrativa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-newsletter-col">
+                    <h3>Newsletter</h3>
+                    <p>Ricevi le migliori notizie, recensioni ed esclusive nella tua inbox.</p>
+                    <form class="footer-newsletter-form" id="homepage-newsletter-form">
+                        <div class="footer-input-group">
+                            <input type="email" class="footer-news-input" id="newsletter-email" placeholder="La tua email..." required>
+                            <button type="submit" class="footer-news-btn">Iscriviti</button>
+                        </div>
+                    </form>
+                    <div id="newsletter-status-msg" style="margin-top: 10px; font-size: 12px; text-align: center; display: none;"></div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Ciak Mania. Tutti i diritti riservati.</span>
+                <span>Sito web realizzato da <a href="https://ianyydevs.altervista.org" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); font-weight: 700; text-decoration: none;">IanyDevs</a> per gli amanti del cinema.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS & Supabase API Bridge -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="JS/ciak-api.js"></script>
+    <script src="JS/main.js"></script>
+</body>
+</html>

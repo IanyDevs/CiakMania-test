@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatti | Ciak Mania Magazine</title>
+    <meta name="description" content="Contatta la redazione di Ciak Mania Magazine. Invia suggerimenti, comunicati stampa o proposte.">
+    
+    <!-- Google Fonts Preconnect & High-Priority Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&family=Dancing+Script:wght@600;700&family=Alex+Brush&display=block" rel="stylesheet">
+    
+    <!-- CSS stylesheet -->
+    <link rel="stylesheet" href="CSS/style.css">
+    <style>
+        .contact-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .form-group-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: var(--border-radius-pill);
+            border: 1px solid var(--bg-tertiary);
+            font-family: var(--font-ui);
+            font-size: 14px;
+            background-color: #FFF;
+            outline: none;
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--border-radius-card);
+            border: 1.5px solid var(--bg-tertiary);
+            background-color: #FFF;
+            font-family: var(--font-ui);
+            font-size: 14px;
+            resize: vertical;
+            min-height: 120px;
+            outline: none;
+        }
+        .form-btn {
+            padding: 12px 30px;
+            border-radius: var(--border-radius-pill);
+            background-color: var(--color-brand);
+            color: #FFFFFF;
+            border: none;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .form-btn:hover {
+            background-color: var(--color-accent);
+            color: #161918;
+        }
+        @media (max-width: 768px) {
+            .contact-grid-layout {
+                grid-template-columns: 1fr;
+            }
+            .form-group-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar Capsule -->
+    <header class="header-wrapper">
+        <nav class="navbar-capsule">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="ASSETS/Logo_no_bg.webp" alt="Ciak Mania Magazine" class="navbar-logo-img">
+                    <span class="logo-text">Ciak<span>Mania</span></span>
+                </a>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html">Home</a></li>
+                <li class="nav-item"><a href="film.html">Film</a></li>
+                <li class="nav-item"><a href="serie-tv.html">Serie Tv</a></li>
+                <li class="nav-item"><a href="recensioni.html">Recensioni</a></li>
+                <li class="nav-item has-dropdown">
+                    <a href="articoli.html">
+                        Articoli
+                        <svg class="dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="articoli.html">Tutti gli Articoli</a>
+                        <a href="classifiche.html">Classifiche </a>
+                        <a href="articoli.html?filter=eventi">Eventi & Festival</a>
+                        <a href="articoli.html?filter=news">Ultime News</a>
+                    </div>
+                </li>
+                <li class="nav-item"><a href="chi-siamo.html">Chi Siamo</a></li>
+            </ul>
+            <div class="nav-right-actions">
+                <button type="button" class="search-btn-trigger" onclick="openSearch()" aria-label="Cerca">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+                <a href="contatti.html" class="nav-cta active">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                    Contatti
+                </a>
+                <button class="mobile-toggle" aria-label="Apri Menu">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Drawer -->
+    <div class="mobile-nav-drawer">
+        <button class="drawer-close" aria-label="Chiudi Menu">&times;</button>
+        <ul class="mobile-menu-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="film.html">Film</a></li>
+            <li><a href="serie-tv.html">Serie Tv</a></li>
+            <li><a href="recensioni.html">Recensioni</a></li>
+            <li><a href="articoli.html">Articoli</a></li>
+            <li><a href="chi-siamo.html">Chi Siamo</a></li>
+        </ul>
+        <a href="contatti.html" class="drawer-cta active">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            Contatti
+        </a>
+    </div>
+
+    <!-- main content container -->
+    <main class="container" style="margin-top: 140px; margin-bottom: 60px;">
+        <h1 style="font-family: var(--font-editorial); font-size: 38px; margin-bottom: 8px; text-align: center;">Contatti</h1>
+        <p style="color: var(--color-text-muted); text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Sei un lettore, un distributore o vuoi collaborare con noi? Compila il modulo o usa i nostri contatti diretti.</p>
+        
+        <div class="contact-grid-layout">
+            <!-- Left Info Panel -->
+            <div style="background-color: var(--bg-secondary); border: 1px solid var(--bg-tertiary); border-radius: var(--border-radius-card); padding: 40px; display: flex; flex-direction: column; justify-content: center; gap: 24px;">
+                <h3 style="font-family: var(--font-editorial); font-size: 24px; margin-bottom: 8px;">Informazioni</h3>
+                
+                <div>
+                    <h4 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-brand); margin-bottom: 4px;">Sede</h4>
+                    <p style="font-size: 15px; color: var(--color-text-muted);">Via del Cinema 42, 00100 Roma, Italia</p>
+                </div>
+                
+                <div>
+                    <h4 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-brand); margin-bottom: 4px;">Email redazione</h4>
+                    <p style="font-size: 15px; color: var(--color-text-muted);">info@ciakmaniamagazine.it</p>
+                </div>
+
+                <div>
+                    <h4 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-brand); margin-bottom: 4px;">Collaborazioni</h4>
+                    <p style="font-size: 15px; color: var(--color-text-muted);">collaborazioni@ciakmaniamagazine.it</p>
+                </div>
+            </div>
+
+            <!-- Right Form Panel -->
+            <div style="background-color: var(--bg-secondary); border: 1px solid var(--bg-tertiary); border-radius: var(--border-radius-card); padding: 40px;">
+                <h3 style="font-family: var(--font-editorial); font-size: 24px; margin-bottom: 24px;">Scrivici un messaggio</h3>
+                <form class="contact-form">
+                    <div class="form-group-row">
+                        <div class="form-group">
+                            <label for="name" style="font-size:12px; font-weight:700; margin-bottom:4px;">Nome completo *</label>
+                            <input type="text" id="name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" style="font-size:12px; font-weight:700; margin-bottom:4px;">Email *</label>
+                            <input type="email" id="email" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject" style="font-size:12px; font-weight:700; margin-bottom:4px;">Oggetto</label>
+                        <input type="text" id="subject" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="message" style="font-size:12px; font-weight:700; margin-bottom:4px;">Messaggio *</label>
+                        <textarea id="message" class="form-textarea" required></textarea>
+                    </div>
+                    <button type="submit" class="form-btn">Invia Messaggio</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Search Modal Overlay -->
+    <div id="search-modal" class="search-modal-overlay">
+        <div class="search-modal-card">
+            <div class="search-input-wrapper">
+                <input type="text" id="search-input" placeholder="Cerca film, serie, articoli..." autocomplete="off">
+                <button type="button" class="close-btn" onclick="closeSearch()">&times;</button>
+            </div>
+            <div id="search-results-list" class="search-live-results"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="index.html" class="footer-logo-brand">
+                        <img src="ASSETS/Logo_no_bg.webp" alt="CiakMania Logo" class="footer-logo-img">
+                        <h3 class="logo-main">Ciak<span>Mania</span></h3>
+                    </a>
+                    <p>La tua dose quotidiana di grande cinema, recensioni ed esclusive dal mondo delle serie TV e dell'intrattenimento.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Sezioni</h3>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="film.html">Film</a></li>
+                        <li><a href="serie-tv.html">Serie TV</a></li>
+                        <li><a href="recensioni.html">Recensioni</a></li>
+                        <li><a href="articoli.html">Articoli</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Info Legali</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="admin.html" target="_blank" rel="noopener noreferrer" style="font-weight:600; color:var(--color-accent);">Area Amministrativa</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-newsletter-col">
+                    <h3>Newsletter</h3>
+                    <p>Ricevi le migliori notizie, recensioni ed esclusive nella tua inbox.</p>
+                    <form class="footer-newsletter-form" onsubmit="event.preventDefault(); alert('Grazie per l\'iscrizione!');">
+                        <div class="footer-input-group">
+                            <input type="email" class="footer-news-input" placeholder="La tua email..." required>
+                            <button type="submit" class="footer-news-btn">Iscriviti</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Ciak Mania. Tutti i diritti riservati.</span>
+                <span>Sito web realizzato da <a href="https://ianyydevs.altervista.org" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent); font-weight: 700; text-decoration: none;">IanyDevs</a> per gli amanti del cinema.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS & Supabase API Bridge -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="JS/ciak-api.js"></script>
+    <script src="JS/main.js"></script>
+</body>
+</html>
