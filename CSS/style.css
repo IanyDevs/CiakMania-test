@@ -673,9 +673,10 @@ main.container {
 .main-content-layout > aside.sidebar {
     position: relative;
     padding-left: 46px;
-    border-left: 1px solid rgba(235, 189, 34, 0.15);
+    border-left: 2px solid #000000;
     height: 100%;
     min-height: 100%;
+    box-shadow: -1px 0 4px rgba(0, 0, 0, 0.08);
 }
 
 .main-content-layout > aside.sidebar::before {
@@ -683,57 +684,56 @@ main.container {
     position: absolute;
     top: 0;
     left: -2px;
-    width: 3px;
+    width: 2px;
     height: 100%;
-    max-height: 100%;
-    background: linear-gradient(180deg, #EBBD22 0%, #800270 45%, rgba(235, 189, 34, 0.4) 85%, transparent 100%);
-    border-radius: 3px;
-    box-shadow: 0 0 14px rgba(235, 189, 34, 0.4), 0 0 25px rgba(128, 2, 112, 0.35);
+    background: #000000;
+    border-radius: 2px;
 }
 
 .main-content-layout > aside.sidebar::after {
     content: '◆';
     position: absolute;
-    top: -6px;
+    top: -7px;
     left: -6px;
     font-size: 11px;
-    color: #EBBD22;
-    text-shadow: 0 0 8px rgba(235, 189, 34, 0.9);
+    color: #000000;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 /* ==========================================================================
-   CIAK LUXURY HORIZONTAL SECTION DIVIDERS (Separatori Sezioni Stilizzati)
+   CIAK SLEEK BLACK HORIZONTAL SECTION DIVIDERS (Separatori Sezioni Neri)
    ========================================================================== */
 .ciak-section-divider-h {
     position: relative;
     width: 100%;
-    height: 1px;
-    margin: 55px auto;
-    background: linear-gradient(90deg, transparent 0%, rgba(235, 189, 34, 0.15) 15%, rgba(235, 189, 34, 0.55) 50%, rgba(128, 2, 112, 0.35) 85%, transparent 100%);
+    height: 2px;
+    margin: 50px auto;
+    background: #000000;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .ciak-section-divider-h::before {
     content: '';
     position: absolute;
-    width: 220px;
+    width: 160px;
     height: 3px;
-    background: linear-gradient(90deg, transparent 0%, #EBBD22 50%, transparent 100%);
-    box-shadow: 0 0 14px rgba(235, 189, 34, 0.6);
+    background: #000000;
     border-radius: 3px;
 }
 
 .ciak-section-divider-h::after {
     content: '★  ★  ★';
     position: absolute;
-    font-size: 8.5px;
+    font-size: 8px;
     letter-spacing: 4px;
-    color: #EBBD22;
-    background: var(--bg-primary, #0d0f0e);
-    padding: 0 16px;
-    text-shadow: 0 0 8px rgba(235, 189, 34, 0.85);
+    color: #000000;
+    background: var(--bg-primary, #FAF9F6);
+    padding: 0 14px;
+    font-weight: 900;
 }
 
 /* Sections */
