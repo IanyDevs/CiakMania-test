@@ -168,10 +168,22 @@ window.fetch = async function (input, init) {
 
             // 4. GET ARTICLE DETAIL
             if (action === 'get_article_detail') {
-                const id = urlObj.searchParams.get('id');
-                if (client && id) {
-                    const { data: rawArt } = await client.from('articles').select('*').eq('id', id).single();
-                    if (rawArt) {
+                const idParam = urlObj.searchParams.get('id');
+                const slugParam = urlObj.searchParams.get('slug');
+                if (client && (idParam || slugParam)) {
+                    let query = client.from('articles').select('*');
+                    if (idParam) {
+                        if (/^\d+$/.test(idParam)) {
+                            query = query.eq('id', parseInt(idParam, 10));
+                        } else {
+                            query = query.eq('slug', idParam);
+                        }
+                    } else if (slugParam) {
+                        query = query.eq('slug', slugParam);
+                    }
+
+                    const { data: rawArt, error: artErr } = await query.single();
+                    if (!artErr && rawArt) {
                         let art = { ...rawArt };
                         if (art.tags) {
                             try {
@@ -192,7 +204,7 @@ window.fetch = async function (input, init) {
 
                         // Increment view count in Supabase asynchronously
                         const newViews = (parseInt(art.views, 10) || 0) + 1;
-                        client.from('articles').update({ views: newViews }).eq('id', id).then(() => {});
+                        client.from('articles').update({ views: newViews }).eq('id', art.id).then(() => {});
 
                         const { data: comms } = await client.from('comments').select('*').eq('articleTitle', art.title);
                         return makeJsonResponse({ status: 'success', article: { ...art, views: newViews }, comments: comms || [] });
