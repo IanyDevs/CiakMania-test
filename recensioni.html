@@ -158,22 +158,26 @@
 
     <!-- Main JS file & Supabase API Bridge -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="JS/ciak-api.js?v=9.0"></script>
-    <script src="JS/main.js?v=9.0"></script>
+    <script src="JS/ciak-api.js?v=9.1"></script>
+    <script src="JS/main.js?v=9.1"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cardsGrid = document.querySelector('.cards-grid');
             if (cardsGrid) {
                 CiakAPI.getArticles().then(data => {
                     if (data && data.status === 'success') {
-                        const reviewArticles = (data.articles || []).filter(art => art.status === 'pubblicato' && (art.rating !== null && art.rating !== '' || art.category === 'recensioni'));
-                        const displayArticles = reviewArticles.length > 0 ? reviewArticles : (data.articles || []).filter(art => art.status === 'pubblicato');
+                        const reviewArticles = (data.articles || []).filter(art => {
+                            if (art.status !== 'pubblicato') return false;
+                            const cat = (art.category || '').toLowerCase().trim();
+                            const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
+                            return cat === 'recensioni' || cat.includes('recensio') || tags.includes('recensio') || (art.rating !== null && art.rating !== '');
+                        });
                         
-                        if (displayArticles.length === 0) {
-                            cardsGrid.innerHTML = '<p style="color:var(--color-text-muted);">Nessuna recensione trovata.</p>';
+                        if (reviewArticles.length === 0) {
+                            cardsGrid.innerHTML = '<p style="color:var(--color-text-muted); grid-column: 1/-1; text-align:center; padding: 40px 0;">Nessuna recensione disponibile al momento.</p>';
                         } else {
                             cardsGrid.innerHTML = '';
-                            displayArticles.forEach(art => renderArticleCard(art, cardsGrid));
+                            reviewArticles.forEach(art => renderArticleCard(art, cardsGrid));
                         }
                     }
                 });

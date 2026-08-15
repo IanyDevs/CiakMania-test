@@ -176,8 +176,8 @@
 
     <!-- Main JS file & Supabase API Bridge -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="JS/ciak-api.js?v=9.0"></script>
-    <script src="JS/main.js?v=9.0"></script>
+    <script src="JS/ciak-api.js?v=9.1"></script>
+    <script src="JS/main.js?v=9.1"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const reviewsGrid = document.getElementById('serie-recensioni-grid');
@@ -191,14 +191,14 @@
                     // All Serie TV articles (case-insensitive & whitespace-safe)
                     const showArticles = allPublished.filter(art => {
                         const cat = (art.category || '').toLowerCase().trim();
-                        const tags = (art.tags || '').toLowerCase();
+                        const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
                         return cat === 'serie-tv' || cat === 'serie tv' || cat === 'serie' || cat === 'tv' || tags.includes('serie');
                     });
 
                     // Top 3 Serie TV reviews
                     const showReviews = allPublished.filter(art => {
                         const cat = (art.category || '').toLowerCase().trim();
-                        const tags = (art.tags || '').toLowerCase();
+                        const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
                         const title = (art.title || '').toLowerCase();
                         const isSerie = cat === 'serie-tv' || cat === 'serie tv' || cat === 'serie' || cat === 'tv' || tags.includes('serie') || title.includes('serie');
                         const isReview = (art.rating !== null && art.rating !== '') || cat === 'recensioni' || tags.includes('recensio');

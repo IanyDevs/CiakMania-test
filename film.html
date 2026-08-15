@@ -178,8 +178,8 @@
 
     <!-- Main JS file & Supabase API Bridge -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="JS/ciak-api.js?v=9.0"></script>
-    <script src="JS/main.js?v=9.0"></script>
+    <script src="JS/ciak-api.js?v=9.1"></script>
+    <script src="JS/main.js?v=9.1"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const reviewsGrid = document.getElementById('film-recensioni-grid');
@@ -193,14 +193,14 @@
                     // All Film articles (case-insensitive & whitespace-safe)
                     const filmArticles = allPublished.filter(art => {
                         const cat = (art.category || '').toLowerCase().trim();
-                        const tags = (art.tags || '').toLowerCase();
+                        const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
                         return cat === 'film' || cat === 'cinema' || tags.includes('film');
                     });
 
                     // Top 3 Film reviews
                     const filmReviews = allPublished.filter(art => {
                         const cat = (art.category || '').toLowerCase().trim();
-                        const tags = (art.tags || '').toLowerCase();
+                        const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
                         const title = (art.title || '').toLowerCase();
                         const isFilm = cat === 'film' || cat === 'cinema' || tags.includes('film') || title.includes('film');
                         const isReview = (art.rating !== null && art.rating !== '') || cat === 'recensioni' || tags.includes('recensio');
