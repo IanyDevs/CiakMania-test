@@ -184,21 +184,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 const videoArticles = publishedArticles.filter(art => {
                     if (!art) return false;
                     const content = (art.content || '').toLowerCase();
-                    const tags = safeTags(art.tags);
+                    const tags = typeof safeTags === 'function' ? safeTags(art.tags) : String(art.tags || '').toLowerCase();
                     const category = (art.category || '').toLowerCase();
-                    const videoField = (art.video || '').toLowerCase();
+                    const title = (art.title || '').toLowerCase();
+                    const videoField = (art.video || art.video_url || '').toLowerCase();
 
+                    // Controllo campo video dedicato
                     if (videoField.trim().length > 0) return true;
-                    if (content.includes('<iframe') || content.includes('<video') || content.includes('youtube') || content.includes('youtu.be') || content.includes('vimeo') || content.includes('.mp4') || content.includes('.webm')) {
+
+                    // Controllo embed video o link video dentro il corpo dell'articolo
+                    if (content.includes('<iframe') || content.includes('<video') || 
+                        content.includes('youtube.com') || content.includes('youtu.be') || 
+                        content.includes('vimeo.com') || content.includes('.mp4') || 
+                        content.includes('.webm') || content.includes('trailer') || content.includes('teaser')) {
                         return true;
                     }
-                    if (tags.includes('trailer') || tags.includes('video') || category.includes('trailer') || category.includes('video')) {
+
+                    // Controllo categoria, tag e titolo
+                    if (tags.includes('trailer') || tags.includes('video') || tags.includes('teaser') ||
+                        category.includes('trailer') || category.includes('video') ||
+                        title.includes('trailer') || title.includes('teaser') || title.includes('guarda il video')) {
                         return true;
                     }
                     return false;
                 }).slice(0, 5);
 
-                const trailerSection = trailersGrid.closest('section');
+                const trailerSection = trailersGrid.closest('.trailers-section-wrapper') || trailersGrid.closest('section') || document.getElementById('trailers-section');
                 if (videoArticles.length === 0) {
                     if (trailerSection) trailerSection.style.display = 'none';
                 } else {
@@ -210,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let html = `
                         <div class="trailers-featured-layout">
                             <!-- 1 Big Featured Trailer -->
-                            <div class="trailer-main-card" onclick="window.location.href='articolo.html?id=${mainTrailer.id}'">
+                            <div class="trailer-main-card" onclick="window.location.href='articolo.html?id=${mainTrailer.id}&from=home'">
                                 <div class="trailer-thumb-wrapper">
                                     <img src="${mainTrailer.image || 'ASSETS/no_image.png'}" alt="${mainTrailer.title}">
                                     <div class="play-icon-overlay">
@@ -218,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                     </div>
                                 </div>
                                 <div class="trailer-card-info" style="padding: 20px;">
-                                    <span class="category-tag">${mainTrailer.category.toUpperCase()}</span>
+                                    <span class="category-tag">${(mainTrailer.category || 'TRAILER').toUpperCase()}</span>
                                     <h3 style="font-size: 20px; font-family: var(--font-editorial); margin-top: 8px; line-height: 1.3;">Guarda il trailer di ${mainTrailer.title}</h3>
                                     <p style="font-size: 13.5px; color: var(--color-text-muted); margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${mainTrailer.excerpt || ''}</p>
                                 </div>
@@ -229,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         html += `<div class="trailer-side-grid">`;
                         sideTrailers.forEach(art => {
                             html += `
-                                <div class="trailer-small-card" onclick="window.location.href='articolo.html?id=${art.id}'">
+                                <div class="trailer-small-card" onclick="window.location.href='articolo.html?id=${art.id}&from=home'">
                                     <div class="trailer-thumb-wrapper">
                                         <img src="${art.image || 'ASSETS/no_image.png'}" alt="${art.title}">
                                         <div class="play-icon-overlay">
@@ -237,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                         </div>
                                     </div>
                                     <div class="trailer-card-info">
-                                        <span class="category-tag" style="font-size: 9px; padding: 2px 6px;">${art.category.toUpperCase()}</span>
+                                        <span class="category-tag" style="font-size: 9px; padding: 2px 6px;">${(art.category || 'TRAILER').toUpperCase()}</span>
                                         <h4>Guarda il trailer di ${art.title}</h4>
                                     </div>
                                 </div>
