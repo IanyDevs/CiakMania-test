@@ -1,3 +1,17 @@
+// Helper: normalizza tags (Array, JSON string, o stringa semplice) in una stringa lowercase sicura
+function safeTags(tags) {
+    if (!tags) return '';
+    if (Array.isArray(tags)) return tags.join(',').toLowerCase();
+    if (typeof tags === 'string') {
+        try {
+            const parsed = JSON.parse(tags);
+            if (Array.isArray(parsed)) return parsed.join(',').toLowerCase();
+        } catch(e) {}
+        return tags.toLowerCase();
+    }
+    return String(tags).toLowerCase();
+}
+
 function formatItalianDate(dateStr) {
     if (!dateStr) return '';
     const translations = {
@@ -170,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const videoArticles = publishedArticles.filter(art => {
                     if (!art) return false;
                     const content = (art.content || '').toLowerCase();
-                    const tags = (art.tags || '').toLowerCase();
+                    const tags = safeTags(art.tags);
                     const category = (art.category || '').toLowerCase();
                     const videoField = (art.video || '').toLowerCase();
 
@@ -340,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isEvent(art) {
         if (!art) return false;
         const cat = (art.category || '').toLowerCase();
-        const tags = (art.tags || '').toLowerCase();
+        const tags = safeTags(art.tags);
         const title = (art.title || '').toLowerCase();
 
         if (cat.includes('event') || cat.includes('festival') || cat.includes('mostra')) return true;
@@ -352,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isClassifica(art) {
         if (!art) return false;
         const cat = (art.category || '').toLowerCase();
-        const tags = (art.tags || '').toLowerCase();
+        const tags = safeTags(art.tags);
         const title = (art.title || '').toLowerCase();
 
         if (cat.includes('classific') || cat.includes('ranking') || cat.includes('top')) return true;
@@ -364,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isInterview(art) {
         if (!art) return false;
         const cat = (art.category || '').toLowerCase();
-        const tags = (art.tags || '').toLowerCase();
+        const tags = safeTags(art.tags);
         const title = (art.title || '').toLowerCase();
 
         if (cat === 'interviste' || cat.includes('intervist')) return true;
@@ -378,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.className = 'cinema-card-box';
 
         card.setAttribute('data-category', art.category || '');
-        card.setAttribute('data-tags', art.tags || '');
+        card.setAttribute('data-tags', safeTags(art.tags));
         card.setAttribute('data-title', art.title || '');
         card.setAttribute('data-has-rating', (art.rating !== null && art.rating !== '') ? 'true' : 'false');
         
@@ -516,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fromParam = (urlParams.get('from') || '').toLowerCase().trim();
 
                 const categoryRaw = (activeArt.category || '').toLowerCase().trim();
-                const tagsRaw = (activeArt.tags || '').toLowerCase();
+                const tagsRaw = safeTags(activeArt.tags);
                 const titleRaw = (activeArt.title || '').toLowerCase();
                 const hasRating = activeArt.rating !== null && activeArt.rating !== '' && String(activeArt.rating).trim() !== '';
 
