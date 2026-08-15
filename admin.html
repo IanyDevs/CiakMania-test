@@ -3553,6 +3553,9 @@
 
                 function handleArticleSave(forcedStatus) {
                     try {
+                        const titleEl = document.getElementById('editor-title');
+                        const title = titleEl ? titleEl.value.trim() : '';
+                        const contentEl = document.getElementById('editor-wysiwyg');
                         const rawContent = contentEl ? contentEl.innerHTML.trim() : '';
                         const content = cleanEditorContentForSave(rawContent);
                         
