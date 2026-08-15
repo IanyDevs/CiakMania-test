@@ -204,6 +204,79 @@ window.fetch = async function (input, init) {
                 return makeJsonResponse({ status: 'success', rankings: [] });
             }
 
+            // 7b. SAVE RANKING (CLASSIFICA)
+            if (action === 'save_ranking') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    const title = (bodyData.title || '').trim();
+                    const type = bodyData.type || 'film';
+                    const period = bodyData.period || 'settimanale';
+                    const status = bodyData.status || 'pubblicata';
+                    const items = Array.isArray(bodyData.items) ? bodyData.items : [];
+
+                    if (!title) {
+                        return makeJsonResponse({ status: 'error', message: 'Titolo della classifica obbligatorio' });
+                    }
+
+                    const rankingPayload = { title, type, period, status };
+
+                    let rankingId = id;
+                    if (id) {
+                        const { error: updErr } = await client.from('rankings').update(rankingPayload).eq('id', id);
+                        if (updErr) {
+                            return makeJsonResponse({ status: 'error', message: updErr.message || 'Errore modifica classifica' });
+                        }
+                    } else {
+                        const { data: newR, error: insErr } = await client.from('rankings').insert([rankingPayload]).select();
+                        if (insErr || !newR || newR.length === 0) {
+                            return makeJsonResponse({ status: 'error', message: (insErr && insErr.message) || 'Errore creazione classifica' });
+                        }
+                        rankingId = newR[0].id;
+                    }
+
+                    // Delete old items and insert updated ones
+                    await client.from('ranking_items').delete().eq('ranking_id', rankingId);
+
+                    if (items.length > 0) {
+                        const itemsPayload = items.map((item, idx) => ({
+                            ranking_id: rankingId,
+                            title: item.title || 'Senza Titolo',
+                            year: item.year || '',
+                            genre: item.genre || '',
+                            rating: item.rating ? String(item.rating) : null,
+                            image: item.image || '',
+                            description: item.description || '',
+                            position: item.position || (idx + 1),
+                            previous_position: item.previous_position ? parseInt(item.previous_position, 10) : null,
+                            movement: item.movement || 'same',
+                            badge: item.badge || '',
+                            link_url: item.link_url || '',
+                            reviews_count: item.reviews_count ? String(item.reviews_count) : null
+                        }));
+                        await client.from('ranking_items').insert(itemsPayload);
+                    }
+
+                    return makeJsonResponse({ status: 'success', message: 'Classifica salvata con successo!' });
+                }
+                return makeJsonResponse({ status: 'error', message: 'Connessione al database non riuscita' });
+            }
+
+            // 7c. DELETE RANKING
+            if (action === 'delete_ranking') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    if (id) {
+                        await client.from('ranking_items').delete().eq('ranking_id', id);
+                        const { error } = await client.from('rankings').delete().eq('id', id);
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Classifica eliminata con successo!' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore eliminazione classifica' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'ID classifica non valido' });
+            }
+
             // 8. GET RANKING DETAIL
             if (action === 'get_ranking_detail') {
                 const id = urlObj.searchParams.get('id');
