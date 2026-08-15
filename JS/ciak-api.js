@@ -170,50 +170,59 @@ window.fetch = async function (input, init) {
             if (action === 'get_article_detail') {
                 const idParam = urlObj.searchParams.get('id');
                 const slugParam = urlObj.searchParams.get('slug');
-                if (client && (idParam || slugParam)) {
-                    let query = client.from('articles').select('*');
+                if (client) {
+                    let art = null;
                     if (idParam) {
                         const numId = parseInt(idParam, 10);
                         if (!isNaN(numId)) {
-                            query = query.eq('id', numId);
-                        } else {
-                            query = query.eq('slug', idParam);
+                            const { data: byId } = await client.from('articles').select('*').eq('id', numId).limit(1);
+                            if (byId && byId.length > 0) art = byId[0];
+                        }
+                        if (!art) {
+                            const { data: bySlug } = await client.from('articles').select('*').eq('slug', idParam).limit(1);
+                            if (bySlug && bySlug.length > 0) art = bySlug[0];
                         }
                     } else if (slugParam) {
-                        query = query.eq('slug', slugParam);
+                        const { data: bySlug } = await client.from('articles').select('*').eq('slug', slugParam).limit(1);
+                        if (bySlug && bySlug.length > 0) art = bySlug[0];
                     }
 
-                    const { data: artRows, error: artErr } = await query.limit(1);
-                    if (!artErr && artRows && artRows.length > 0) {
-                        let art = { ...artRows[0] };
-                        if (art.tags) {
+                    // Fallback to latest article if specific article was not found
+                    if (!art) {
+                        const { data: latestRows } = await client.from('articles').select('*').order('id', { ascending: false }).limit(1);
+                        if (latestRows && latestRows.length > 0) art = latestRows[0];
+                    }
+
+                    if (art) {
+                        let parsedArt = { ...art };
+                        if (parsedArt.tags) {
                             try {
-                                const tagsArr = typeof art.tags === 'string' ? JSON.parse(art.tags) : art.tags;
+                                const tagsArr = typeof parsedArt.tags === 'string' ? JSON.parse(parsedArt.tags) : parsedArt.tags;
                                 if (Array.isArray(tagsArr)) {
                                     const styleMarker = tagsArr.find(t => typeof t === 'string' && t.startsWith('__style:'));
                                     if (styleMarker) {
                                         const styleData = JSON.parse(decodeURIComponent(styleMarker.replace('__style:', '')));
-                                        if (styleData.tf) art.title_font = styleData.tf;
-                                        if (styleData.tc) art.title_color = styleData.tc;
-                                        if (styleData.ef) art.excerpt_font = styleData.ef;
-                                        if (styleData.ec) art.excerpt_color = styleData.ec;
+                                        if (styleData.tf) parsedArt.title_font = styleData.tf;
+                                        if (styleData.tc) parsedArt.title_color = styleData.tc;
+                                        if (styleData.ef) parsedArt.excerpt_font = styleData.ef;
+                                        if (styleData.ec) parsedArt.excerpt_color = styleData.ec;
                                     }
-                                    art.tags = tagsArr.filter(t => typeof t === 'string' && !t.startsWith('__style:'));
+                                    parsedArt.tags = tagsArr.filter(t => typeof t === 'string' && !t.startsWith('__style:'));
                                 }
                             } catch(e) {}
                         }
 
                         // Increment view count in Supabase asynchronously
-                        const newViews = (parseInt(art.views, 10) || 0) + 1;
-                        client.from('articles').update({ views: newViews }).eq('id', art.id).then(() => {});
+                        const newViews = (parseInt(parsedArt.views, 10) || 0) + 1;
+                        client.from('articles').update({ views: newViews }).eq('id', parsedArt.id).then(() => {});
 
                         let comms = [];
                         try {
-                            const { data: commsData } = await client.from('comments').select('*').eq('articleTitle', art.title);
+                            const { data: commsData } = await client.from('comments').select('*').eq('articleTitle', parsedArt.title);
                             if (commsData) comms = commsData;
                         } catch (e) {}
 
-                        return makeJsonResponse({ status: 'success', article: { ...art, views: newViews }, comments: comms });
+                        return makeJsonResponse({ status: 'success', article: { ...parsedArt, views: newViews }, comments: comms });
                     }
                 }
                 return makeJsonResponse({ status: 'error', message: 'Articolo non trovato' });
