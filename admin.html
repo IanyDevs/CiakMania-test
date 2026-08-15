@@ -13,7 +13,7 @@
     
     <!-- Supabase JS Client & Ciak Unified API Bridge -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="JS/ciak-api.js"></script>
+    <script src="JS/ciak-api.js?v=3.1"></script>
     
     <style>
         /* CSS variables per supporto nativo Dark e Light Mode */
@@ -3590,10 +3590,6 @@
                             image: document.getElementById('editor-cover-url') ? document.getElementById('editor-cover-url').value : '',
                             rating: document.getElementById('post-rating') ? document.getElementById('post-rating').value : '',
                             technical_judgment: document.getElementById('post-technical-judgment') ? document.getElementById('post-technical-judgment').value : '',
-                            title_font: (document.getElementById('editor-title-font') && document.getElementById('editor-title-font').value) ? document.getElementById('editor-title-font').value : 'Playfair Display',
-                            title_color: (document.getElementById('editor-title-color') && document.getElementById('editor-title-color').value) ? document.getElementById('editor-title-color').value : '#FFFFFF',
-                            excerpt_font: (document.getElementById('editor-excerpt-font') && document.getElementById('editor-excerpt-font').value) ? document.getElementById('editor-excerpt-font').value : 'Plus Jakarta Sans',
-                            excerpt_color: (document.getElementById('editor-excerpt-color') && document.getElementById('editor-excerpt-color').value) ? document.getElementById('editor-excerpt-color').value : '#D6D3DC',
                             status: statusVal,
                             category: categoryVal,
                             tags: typeof selectedTags !== 'undefined' ? selectedTags : [],
