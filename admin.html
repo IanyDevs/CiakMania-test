@@ -3761,30 +3761,34 @@
 
                     // Delete Category handler
                     document.querySelectorAll('.delete-cat-btn').forEach(btn => {
-                        btn.addEventListener('click', () => {
+                        btn.addEventListener('click', async () => {
                             const id = btn.getAttribute('data-id');
                             const name = btn.getAttribute('data-name');
 
-                            if (confirm(`Sei sicuro di voler eliminare definitivamente la categoria "${name}" dal database?`)) {
-                                fetch('api/api.php?action=delete_category', {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ id: id, author: currentUser ? currentUser.name : 'Admin' })
-                                })
-                                .then(res => res.json())
-                                .then(resData => {
-                                    if (resData.status === 'success') {
-                                        showToast(`Categoria "${name}" eliminata dal database!`);
-                                        renderCategorieView();
-                                    } else {
-                                        showToast('Errore: ' + (resData.message || 'Impossibile eliminare la categoria'));
-                                    }
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                    showToast('Errore di connessione durante l\'eliminazione della categoria.');
-                                });
-                            }
+                            const isConfirmed = await showCustomConfirm(
+                                'Elimina Categoria',
+                                `Sei sicuro di voler eliminare definitivamente la categoria "${name}" dal database? Questa azione non può essere annullata.`
+                            );
+                            if (!isConfirmed) return;
+
+                            fetch('api/api.php?action=delete_category', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: id, author: currentUser ? currentUser.name : 'Admin' })
+                            })
+                            .then(res => res.json())
+                            .then(resData => {
+                                if (resData.status === 'success') {
+                                    showToast(`Categoria "${name}" eliminata dal database!`);
+                                    renderCategorieView();
+                                } else {
+                                    showToast('Errore: ' + (resData.message || 'Impossibile eliminare la categoria'));
+                                }
+                            })
+                            .catch(err => {
+                                console.error(err);
+                                showToast('Errore di connessione durante l\'eliminazione della categoria.');
+                            });
                         });
                     });
 
