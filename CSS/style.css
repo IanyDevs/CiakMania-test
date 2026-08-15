@@ -773,22 +773,19 @@ main.container {
     display: inline-block;
     position: relative;
     white-space: nowrap;
-    overflow: hidden;
     vertical-align: bottom;
-    clip-path: inset(0 100% 0 0);
-    transition: clip-path 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    clip-path: inset(0 0% 0 0); /* Default fully visible to prevent disappearing */
+    animation: handwritingReveal 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-.ciak-editorial-heading .title-script.written {
-    clip-path: inset(0 0% 0 0);
-}
-
-@keyframes writePen {
+@keyframes handwritingReveal {
     0% {
         clip-path: inset(0 100% 0 0);
+        opacity: 0.2;
     }
     100% {
         clip-path: inset(0 0% 0 0);
+        opacity: 1;
     }
 }
 
