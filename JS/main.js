@@ -597,19 +597,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Render Article Header
                 if (articleDetailContainer) {
-                    const titleFont = activeArt.title_font || "'Cormorant Garamond', Georgia, serif";
+                    const rawTitleFont = activeArt.title_font ? activeArt.title_font.replace(/['"]/g, '') : 'Cormorant Garamond';
+                    const titleFont = `'${rawTitleFont}', Georgia, serif`;
                     const titleColor = activeArt.title_color || "#FFFFFF";
-                    const excerptFont = activeArt.excerpt_font || "'Plus Jakarta Sans', sans-serif";
+
+                    const rawExcerptFont = activeArt.excerpt_font ? activeArt.excerpt_font.replace(/['"]/g, '') : 'Plus Jakarta Sans';
+                    const excerptFont = `'${rawExcerptFont}', sans-serif`;
                     const excerptColor = activeArt.excerpt_color || "#D6D3DC";
 
                     let excerptHtml = '';
                     if (activeArt.excerpt) {
-                        excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont}; color:${excerptColor}; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
+                        excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont} !important; color:${excerptColor} !important; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
                     }
 
                     articleDetailContainer.innerHTML = `
                         <span class="category-tag"><span class="cat-dot"></span>${(activeArt.category || 'CINEMA').toUpperCase()}</span>
-                        <h1 class="article-title" style="font-family:${titleFont}; color:${titleColor};">${activeArt.title}</h1>
+                        <h1 class="article-title" style="font-family:${titleFont} !important; color:${titleColor} !important;">${activeArt.title}</h1>
                         ${excerptHtml}
                         <div class="meta-info article-meta">
                             <span class="meta-item">

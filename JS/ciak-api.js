@@ -140,7 +140,27 @@ window.fetch = async function (input, init) {
 
                     const { data, error } = await query;
                     if (!error && data) {
-                        return makeJsonResponse({ status: 'success', articles: data });
+                        const parsedArts = data.map(art => {
+                            let item = { ...art };
+                            if (item.tags) {
+                                try {
+                                    const tagsArr = typeof item.tags === 'string' ? JSON.parse(item.tags) : item.tags;
+                                    if (Array.isArray(tagsArr)) {
+                                        const styleMarker = tagsArr.find(t => typeof t === 'string' && t.startsWith('__style:'));
+                                        if (styleMarker) {
+                                            const styleData = JSON.parse(decodeURIComponent(styleMarker.replace('__style:', '')));
+                                            if (styleData.tf) item.title_font = styleData.tf;
+                                            if (styleData.tc) item.title_color = styleData.tc;
+                                            if (styleData.ef) item.excerpt_font = styleData.ef;
+                                            if (styleData.ec) item.excerpt_color = styleData.ec;
+                                        }
+                                        item.tags = tagsArr.filter(t => typeof t === 'string' && !t.startsWith('__style:'));
+                                    }
+                                } catch(e) {}
+                            }
+                            return item;
+                        });
+                        return makeJsonResponse({ status: 'success', articles: parsedArts });
                     }
                 }
                 return makeJsonResponse({ status: 'success', articles: [] });
@@ -150,8 +170,26 @@ window.fetch = async function (input, init) {
             if (action === 'get_article_detail') {
                 const id = urlObj.searchParams.get('id');
                 if (client && id) {
-                    const { data: art } = await client.from('articles').select('*').eq('id', id).single();
-                    if (art) {
+                    const { data: rawArt } = await client.from('articles').select('*').eq('id', id).single();
+                    if (rawArt) {
+                        let art = { ...rawArt };
+                        if (art.tags) {
+                            try {
+                                const tagsArr = typeof art.tags === 'string' ? JSON.parse(art.tags) : art.tags;
+                                if (Array.isArray(tagsArr)) {
+                                    const styleMarker = tagsArr.find(t => typeof t === 'string' && t.startsWith('__style:'));
+                                    if (styleMarker) {
+                                        const styleData = JSON.parse(decodeURIComponent(styleMarker.replace('__style:', '')));
+                                        if (styleData.tf) art.title_font = styleData.tf;
+                                        if (styleData.tc) art.title_color = styleData.tc;
+                                        if (styleData.ef) art.excerpt_font = styleData.ef;
+                                        if (styleData.ec) art.excerpt_color = styleData.ec;
+                                    }
+                                    art.tags = tagsArr.filter(t => typeof t === 'string' && !t.startsWith('__style:'));
+                                }
+                            } catch(e) {}
+                        }
+
                         // Increment view count in Supabase asynchronously
                         const newViews = (parseInt(art.views, 10) || 0) + 1;
                         client.from('articles').update({ views: newViews }).eq('id', id).then(() => {});
@@ -357,6 +395,26 @@ window.fetch = async function (input, init) {
                         } else {
                             clean.slug = baseSlug;
                         }
+                    }
+
+                    // Store custom typography safely without breaking database schema
+                    if (bodyData.title_font || bodyData.title_color || bodyData.excerpt_font || bodyData.excerpt_color) {
+                        const styleMeta = {
+                            tf: bodyData.title_font || 'Playfair Display',
+                            tc: bodyData.title_color || '#FFFFFF',
+                            ef: bodyData.excerpt_font || 'Plus Jakarta Sans',
+                            ec: bodyData.excerpt_color || '#D6D3DC'
+                        };
+                        // Attach as hidden tag marker to preserve custom font & color across all DB schemas
+                        let tagsArr = [];
+                        if (typeof clean.tags === 'string') {
+                            try { tagsArr = JSON.parse(clean.tags); } catch(e) { tagsArr = clean.tags.split(','); }
+                        } else if (Array.isArray(clean.tags)) {
+                            tagsArr = [...clean.tags];
+                        }
+                        tagsArr = tagsArr.filter(t => typeof t === 'string' && !t.startsWith('__style:'));
+                        tagsArr.push('__style:' + encodeURIComponent(JSON.stringify(styleMeta)));
+                        clean.tags = JSON.stringify(tagsArr);
                     }
 
                     if (id) {
