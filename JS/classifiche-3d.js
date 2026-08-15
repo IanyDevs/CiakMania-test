@@ -79,6 +79,31 @@
                 currentCategoryRankIndex = 0;
                 setupRankingsEditionSwitcher();
                 loadRankingDetailById(categoryRankingsList[0].id, isInitialLoad);
+            } else if (isInitialLoad) {
+                // Se al primo caricamento 'film' non ha classifiche, cerca in tutte le categorie
+                CiakAPI.getRankings('all').then(allData => {
+                    if (allData && allData.status === 'success' && allData.rankings && allData.rankings.length > 0) {
+                        const firstAvailable = allData.rankings[0];
+                        const availableType = firstAvailable.type || 'articoli';
+                        
+                        // Aggiorna tab attiva
+                        filterTabs.forEach(t => {
+                            if (t.dataset.type === availableType) t.classList.add('active');
+                            else t.classList.remove('active');
+                        });
+
+                        categoryRankingsList = allData.rankings.filter(r => r.type === availableType || availableType === 'all');
+                        if (categoryRankingsList.length === 0) categoryRankingsList = allData.rankings;
+                        currentCategoryRankIndex = 0;
+                        currentTypeFilter = availableType;
+                        setupRankingsEditionSwitcher();
+                        loadRankingDetailById(firstAvailable.id, true);
+                    } else {
+                        categoryRankingsList = [];
+                        if (rankingEditionSwitcher) rankingEditionSwitcher.style.display = 'none';
+                        renderEmptyState();
+                    }
+                }).catch(() => renderEmptyState());
             } else {
                 categoryRankingsList = [];
                 if (rankingEditionSwitcher) rankingEditionSwitcher.style.display = 'none';

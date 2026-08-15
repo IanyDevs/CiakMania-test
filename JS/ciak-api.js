@@ -345,10 +345,18 @@ window.fetch = async function (input, init) {
             // 8. GET RANKING DETAIL
             if (action === 'get_ranking_detail') {
                 const id = urlObj.searchParams.get('id');
-                if (client && id) {
-                    const { data: ranking } = await client.from('rankings').select('*').eq('id', id).single();
+                if (client) {
+                    let ranking = null;
+                    if (id) {
+                        const { data } = await client.from('rankings').select('*').eq('id', id).limit(1);
+                        if (data && data.length > 0) ranking = data[0];
+                    }
+                    if (!ranking) {
+                        const { data } = await client.from('rankings').select('*').order('id', { ascending: false }).limit(1);
+                        if (data && data.length > 0) ranking = data[0];
+                    }
                     if (ranking) {
-                        const { data: items } = await client.from('ranking_items').select('*').eq('ranking_id', id).order('position', { ascending: true });
+                        const { data: items } = await client.from('ranking_items').select('*').eq('ranking_id', ranking.id).order('position', { ascending: true });
                         return makeJsonResponse({ status: 'success', ranking, items: items || [] });
                     }
                 }
