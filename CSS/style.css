@@ -660,8 +660,8 @@ main.container {
     display: grid;
     grid-template-columns: 2.2fr 1fr;
     gap: 48px;
-    padding: 60px 0;
-    align-items: start;
+    padding: 50px 0 30px 0;
+    align-items: stretch;
 }
 
 .main-content-layout:not(:has(aside.sidebar)) {
@@ -672,20 +672,68 @@ main.container {
 /* Vertical Divider between Main Feed and Sidebar / Classifiche */
 .main-content-layout > aside.sidebar {
     position: relative;
-    padding-left: 42px;
-    border-left: 1px solid rgba(235, 189, 34, 0.22);
+    padding-left: 46px;
+    border-left: 1px solid rgba(235, 189, 34, 0.15);
+    height: 100%;
+    min-height: 100%;
 }
 
 .main-content-layout > aside.sidebar::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -1px;
-    width: 2px;
-    height: 90px;
-    background: linear-gradient(180deg, #EBBD22 0%, #800270 100%);
-    border-radius: 2px;
-    box-shadow: 0 0 12px rgba(235, 189, 34, 0.45);
+    left: -2px;
+    width: 3px;
+    height: 100%;
+    max-height: 100%;
+    background: linear-gradient(180deg, #EBBD22 0%, #800270 45%, rgba(235, 189, 34, 0.4) 85%, transparent 100%);
+    border-radius: 3px;
+    box-shadow: 0 0 14px rgba(235, 189, 34, 0.4), 0 0 25px rgba(128, 2, 112, 0.35);
+}
+
+.main-content-layout > aside.sidebar::after {
+    content: '◆';
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    font-size: 11px;
+    color: #EBBD22;
+    text-shadow: 0 0 8px rgba(235, 189, 34, 0.9);
+}
+
+/* ==========================================================================
+   CIAK LUXURY HORIZONTAL SECTION DIVIDERS (Separatori Sezioni Stilizzati)
+   ========================================================================== */
+.ciak-section-divider-h {
+    position: relative;
+    width: 100%;
+    height: 1px;
+    margin: 55px auto;
+    background: linear-gradient(90deg, transparent 0%, rgba(235, 189, 34, 0.15) 15%, rgba(235, 189, 34, 0.55) 50%, rgba(128, 2, 112, 0.35) 85%, transparent 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ciak-section-divider-h::before {
+    content: '';
+    position: absolute;
+    width: 220px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, #EBBD22 50%, transparent 100%);
+    box-shadow: 0 0 14px rgba(235, 189, 34, 0.6);
+    border-radius: 3px;
+}
+
+.ciak-section-divider-h::after {
+    content: '★  ★  ★';
+    position: absolute;
+    font-size: 8.5px;
+    letter-spacing: 4px;
+    color: #EBBD22;
+    background: var(--bg-primary, #0d0f0e);
+    padding: 0 16px;
+    text-shadow: 0 0 8px rgba(235, 189, 34, 0.85);
 }
 
 /* Sections */
