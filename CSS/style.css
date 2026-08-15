@@ -702,64 +702,127 @@ main.container {
     filter: drop-shadow(0 6px 18px rgba(127, 2, 113, 0.15));
 }
 
-.ciak-graphic-container {
+/* ==========================================================================
+   CIAK MANIA PURE CSS EDITORIAL HEADINGS (Rich Cinematic Design)
+   Ispirati alle grafiche originali: Bebas Neue, Great Vibes/Alex Brush,
+   filmstrip 35mm, badge numerati, riflessi oro e brand viola.
+   ========================================================================== */
+
+.ciak-section-header {
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    position: relative;
+}
+
+.ciak-section-header.center-aligned {
     align-items: center;
-    justify-content: flex-start;
-    margin-bottom: 24px;
-    width: 100%;
+    text-align: center;
 }
 
-.ciak-graphic-container.center-aligned {
-    justify-content: center;
-}
-
-.ciak-mobile-title {
-    display: none !important;
-    font-family: var(--font-editorial);
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--color-text-main);
-    letter-spacing: -0.5px;
-    margin: 0;
-    line-height: 1.2;
-}
-
-@media (max-width: 768px) {
-    .ciak-graphic-heading {
-        display: none !important;
-    }
-    .ciak-mobile-title {
-        display: block !important;
-        font-family: var(--font-editorial) !important;
-        font-size: 28px !important;
-        font-weight: 800 !important;
-        color: var(--color-text-main) !important;
-        margin: 0 !important;
-        line-height: 1.2 !important;
-    }
-}
-
-.ciak-eyebrow {
+.ciak-section-header .ciak-eyebrow-tag {
     display: inline-flex;
     align-items: center;
     gap: 8px;
     font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: #EBBD22;
+    color: var(--color-brand);
+    background: rgba(127, 2, 113, 0.08);
+    border: 1px solid rgba(127, 2, 113, 0.2);
+    padding: 4px 12px;
+    border-radius: 50px;
     margin-bottom: 8px;
 }
 
-.ciak-eyebrow .num {
-    color: #EBBD22;
+.ciak-section-header .ciak-eyebrow-tag .num {
+    color: var(--color-accent);
     font-weight: 900;
 }
 
-.ciak-eyebrow .label {
-    color: #8E8A95;
+.ciak-editorial-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    position: relative;
+    line-height: 1;
+}
+
+.ciak-editorial-heading .title-primary {
+    font-family: 'Bebas Neue', var(--font-editorial);
+    font-size: 46px;
+    letter-spacing: 2.5px;
+    color: var(--color-text-main);
+    text-transform: uppercase;
+    line-height: 1;
+}
+
+.ciak-editorial-heading .title-script {
+    font-family: 'Great Vibes', 'Alex Brush', cursive;
+    font-size: 54px;
+    color: var(--color-brand);
+    line-height: 1;
+    font-weight: 700;
+    margin-left: -4px;
+    transform: rotate(-3deg);
+    text-shadow: 0 2px 10px rgba(127, 2, 113, 0.25);
+}
+
+.ciak-editorial-heading .title-accent-badge {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--color-brand) 0%, #3D0136 100%);
+    color: #FFFFFF;
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(127, 2, 113, 0.3);
+    border: 1px solid rgba(235, 189, 34, 0.4);
+}
+
+.ciak-editorial-heading .title-filmstrip-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 8px;
+    background: #161918;
+    border-radius: 4px;
+    border: 1px solid rgba(235, 189, 34, 0.4);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.ciak-editorial-heading .title-filmstrip-icon span {
+    width: 4px;
+    height: 6px;
+    background: #EBBD22;
+    border-radius: 1px;
+}
+
+.ciak-header-line-accent {
+    width: 60px;
+    height: 3.5px;
+    background: linear-gradient(90deg, var(--color-brand) 0%, var(--color-accent) 100%);
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .ciak-editorial-heading .title-primary {
+        font-size: 32px !important;
+        letter-spacing: 1.5px !important;
+    }
+    .ciak-editorial-heading .title-script {
+        font-size: 38px !important;
+    }
+    .ciak-section-header {
+        margin-bottom: 20px !important;
+    }
 }
 
 /* 01: ULTIME NOTIZIE - Block con Pellicola 35mm */

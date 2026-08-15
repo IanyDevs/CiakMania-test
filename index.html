@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&family=Dancing+Script:wght@600;700&family=Alex+Brush&display=block" rel="stylesheet">
     
     <!-- CSS stylesheet -->
-    <link rel="stylesheet" href="CSS/style.css?v=3.2">
+    <link rel="stylesheet" href="CSS/style.css?v=3.3">
 </head>
 <body>
 
@@ -83,9 +83,16 @@
             <!-- Main Feed Column -->
             <section class="articles-column">
                 <!-- 01: Sezione Ultimi Articoli -->
-                <div class="ciak-graphic-container" style="margin-bottom: 20px;">
-                    <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/01_ultimi_articoli.png" alt="01 Ultimi Articoli" class="ciak-graphic-heading" style="max-width: 320px;">
-                    <h2 class="ciak-mobile-title">Ultimi Articoli</h2>
+                <div class="ciak-section-header">
+                    <span class="ciak-eyebrow-tag"><span class="num">01</span> EDITORIAL FEED</span>
+                    <h2 class="ciak-editorial-heading">
+                        <span class="title-primary">Ultimi</span>
+                        <span class="title-script">Articoli</span>
+                        <div class="title-filmstrip-icon">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </h2>
+                    <div class="ciak-header-line-accent"></div>
                 </div>
                 <div class="cards-grid" id="ultime-notizie-grid">
                     <!-- Loaded dynamically -->
@@ -96,9 +103,13 @@
             <aside class="sidebar">
                 <!-- 08: Classifiche (Vertical Sidebar Widget) -->
                 <div class="classifiche-widget">
-                    <div class="ciak-graphic-container" style="margin-bottom: 14px;">
-                        <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/08_classifiche_top10.png" alt="08 Most Popular Top 10 Classifiche" class="ciak-graphic-heading" style="max-width: 250px;">
-                        <h3 class="ciak-mobile-title">Classifiche Top 10</h3>
+                    <div class="ciak-section-header" style="margin-bottom: 16px;">
+                        <span class="ciak-eyebrow-tag"><span class="num">08</span> MOST POPULAR</span>
+                        <h3 class="ciak-editorial-heading">
+                            <span class="title-primary">Classifiche</span>
+                            <span class="title-accent-badge">TOP 10</span>
+                        </h3>
+                        <div class="ciak-header-line-accent" style="width: 40px;"></div>
                     </div>
                     <div class="classifiche-list" id="classifiche-list-container">
                         <!-- Loaded dynamically -->
@@ -112,9 +123,14 @@
 
         <!-- 05: Sezione Recensioni -->
         <section class="reviews-section-wrapper">
-            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
-                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/05_recensioni.png" alt="05 Recensioni" class="ciak-graphic-heading" style="max-width: 330px;">
-                <h2 class="ciak-mobile-title">Recensioni</h2>
+            <div class="ciak-section-header">
+                <span class="ciak-eyebrow-tag"><span class="num">05</span> CRITICA & VERDETTI</span>
+                <h2 class="ciak-editorial-heading">
+                    <span class="title-primary">Le Nostre</span>
+                    <span class="title-script">Recensioni</span>
+                    <span class="title-accent-badge">★ VERIFICATO</span>
+                </h2>
+                <div class="ciak-header-line-accent"></div>
             </div>
             <div class="cards-grid" id="recensioni-highlights-grid">
                 <!-- Loaded dynamically -->
@@ -123,9 +139,16 @@
 
         <!-- 07: Sezione Prossime Uscite -->
         <section class="piu-letti-section-wrapper" id="piu-letti-section" style="margin: 45px 0 50px 0;">
-            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
-                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/07_prossime_uscite.png" alt="07 Prossime Uscite" class="ciak-graphic-heading" style="max-width: 330px;">
-                <h2 class="ciak-mobile-title">Prossime Uscite</h2>
+            <div class="ciak-section-header">
+                <span class="ciak-eyebrow-tag"><span class="num">07</span> ANTEPRIME & CALENDARIO</span>
+                <h2 class="ciak-editorial-heading">
+                    <span class="title-primary">Prossime</span>
+                    <span class="title-script">Uscite</span>
+                    <div class="title-filmstrip-icon">
+                        <span></span><span></span><span></span>
+                    </div>
+                </h2>
+                <div class="ciak-header-line-accent"></div>
             </div>
             <div class="classifiche-ranking-grid" id="classifiche-grid-container">
                 <!-- Loaded dynamically -->
@@ -134,9 +157,13 @@
 
         <!-- 06: Sezione Approfondimenti -->
         <section class="events-section-wrapper" id="events-section" style="margin: 45px 0 50px 0;">
-            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
-                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/06_approfondimenti.png" alt="06 Approfondimenti" class="ciak-graphic-heading" style="max-width: 340px;">
-                <h2 class="ciak-mobile-title">Approfondimenti</h2>
+            <div class="ciak-section-header">
+                <span class="ciak-eyebrow-tag"><span class="num">06</span> SPECIAL REPORT</span>
+                <h2 class="ciak-editorial-heading">
+                    <span class="title-primary">Focus &</span>
+                    <span class="title-script">Approfondimenti</span>
+                </h2>
+                <div class="ciak-header-line-accent"></div>
             </div>
             <div class="cards-grid" id="events-grid-container">
                 <!-- Loaded dynamically -->
@@ -145,9 +172,14 @@
 
         <!-- 07: Sezione Trailer -->
         <section style="margin: 35px 0 60px 0;">
-            <div class="ciak-graphic-container" style="margin-bottom: 22px;">
-                <img src="ASSETS/TITOLI/TITOLI3_TRANSPARENT/07_trailer_official.png" alt="07 Behind The Scenes Trailer - Guarda i trailer ufficiali" class="ciak-graphic-heading" style="max-width: 320px;">
-                <h2 class="ciak-mobile-title">Trailer Ufficiali</h2>
+            <div class="ciak-section-header">
+                <span class="ciak-eyebrow-tag"><span class="num">09</span> BEHIND THE SCENES</span>
+                <h2 class="ciak-editorial-heading">
+                    <span class="title-primary">Trailer</span>
+                    <span class="title-script">Ufficiali</span>
+                    <span class="title-accent-badge">▶ HD</span>
+                </h2>
+                <div class="ciak-header-line-accent"></div>
             </div>
             <div class="trailers-grid" id="trailers-grid-container">
                 <!-- Loaded dynamically -->
