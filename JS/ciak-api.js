@@ -309,7 +309,67 @@ window.fetch = async function (input, init) {
                 return makeJsonResponse({ status: 'error', message: 'Connessione a Supabase non riuscita.' });
             }
 
-            // 10. GET NOTIFICATIONS
+            // 10. SAVE CATEGORY (INSERT / UPDATE)
+            if (action === 'save_category') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    const name = (bodyData.name || '').trim();
+                    const color = (bodyData.color || '#800270').trim();
+                    const desc = (bodyData.desc || '').trim();
+
+                    if (!name) {
+                        return makeJsonResponse({ status: 'error', message: 'Il nome della categoria è obbligatorio' });
+                    }
+
+                    let baseSlug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+                    if (!baseSlug) baseSlug = 'cat-' + Date.now();
+
+                    const catData = {
+                        name: name,
+                        slug: baseSlug,
+                        color: color,
+                        desc: desc
+                    };
+
+                    if (id) {
+                        const { data, error } = await client.from('categories').update(catData).eq('id', id).select();
+                        if (!error && data && data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Categoria aggiornata!', category: data[0] });
+                        }
+                        if (error) {
+                            console.error('Category update error:', error);
+                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore aggiornamento categoria' });
+                        }
+                    } else {
+                        const { data, error } = await client.from('categories').insert([catData]).select();
+                        if (!error && data && data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Categoria creata!', category: data[0] });
+                        }
+                        if (error) {
+                            console.error('Category insert error:', error);
+                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore creazione categoria' });
+                        }
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'Connessione al database non riuscita' });
+            }
+
+            // 10b. DELETE CATEGORY
+            if (action === 'delete_category') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    if (id) {
+                        const { error } = await client.from('categories').delete().eq('id', id);
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Categoria eliminata' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore eliminazione categoria' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'ID categoria non valido' });
+            }
+
+            // 11. GET NOTIFICATIONS
             if (action === 'get_notifications') {
                 if (client) {
                     const { data } = await client.from('notifications').select('*').order('id', { ascending: false }).limit(10);
