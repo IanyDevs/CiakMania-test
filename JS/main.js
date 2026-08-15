@@ -440,8 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.renderArticleCard = renderArticleCard;
 
     // --- DYNAMIC ARTICLE DETAIL PAGE (DUAL: MYSQL & SUPABASE) ---
-    const isArticlePage = document.querySelector('.article-fullscreen-experience') || document.querySelector('.article-reading-stream') || document.querySelector('.article-header');
-    if (isArticlePage) {
+    const articleDetailContainer = document.querySelector('.article-header');
+    if (articleDetailContainer) {
         const params = new URLSearchParams(window.location.search);
         let articleId = params.get('id');
         
@@ -460,348 +460,261 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadArticleData(id) {
         CiakAPI.getArticleDetail(id).then(data => {
-            if (data && data.status === 'success' && data.article) {
-                try {
-                    const activeArt = data.article;
-                    const comments = data.comments || [];
-                    
-                    document.title = `${activeArt.title} | Ciak Mania Magazine`;
-                    
-                    // Calculate reading time estimate
-                    const wordCount = (activeArt.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length;
-                    const readTime = Math.max(1, Math.ceil(wordCount / 180));
+            if (data && data.status === 'success') {
+                const activeArt = data.article;
+                const comments = data.comments || [];
+                
+                document.title = `${activeArt.title} | Ciak Mania Magazine`;
+                
+                // Calculate reading time estimate
+                const wordCount = (activeArt.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length;
+                const readTime = Math.max(1, Math.ceil(wordCount / 180));
 
-                    // Dynamic Back Button based on Category & Origin (Home, Film, Serie TV, Recensioni, Articoli, Classifiche)
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const fromParam = (urlParams.get('from') || '').toLowerCase().trim();
+                // Dynamic Back Button based on Category & Origin (Home, Film, Serie TV, Recensioni, Articoli, Classifiche)
+                const urlParams = new URLSearchParams(window.location.search);
+                const fromParam = (urlParams.get('from') || '').toLowerCase().trim();
 
-                    const categoryRaw = (activeArt.category || '').toLowerCase().trim();
-                    const tagsRaw = (activeArt.tags || '').toLowerCase();
-                    const titleRaw = (activeArt.title || '').toLowerCase();
-                    const hasRating = activeArt.rating !== null && activeArt.rating !== '' && String(activeArt.rating).trim() !== '';
+                const categoryRaw = (activeArt.category || '').toLowerCase().trim();
+                const tagsRaw = (activeArt.tags || '').toLowerCase();
+                const titleRaw = (activeArt.title || '').toLowerCase();
+                const hasRating = activeArt.rating !== null && activeArt.rating !== '' && String(activeArt.rating).trim() !== '';
 
-                    let backUrl = 'index.html';
-                    let backLabel = 'Torna alla Home';
-                    let floatingLabel = 'Home';
+                let backUrl = 'index.html';
+                let backLabel = 'Torna alla Home';
+                let floatingLabel = 'Home';
 
-                    // 1. Priorità massima: parametro ?from= nell'URL o Referrer del browser
-                    const ref = document.referrer || '';
-                    let originPage = fromParam;
+                // 1. Priorità massima: parametro ?from= nell'URL o Referrer del browser
+                const ref = document.referrer || '';
+                let originPage = fromParam;
 
-                    if (!originPage && ref) {
-                        try {
-                            const refUrl = new URL(ref);
-                            const p = refUrl.pathname.toLowerCase();
-                            if (p.endsWith('index.html') || p === '/' || p.endsWith('/')) originPage = 'home';
-                            else if (p.includes('film.html')) originPage = 'film';
-                            else if (p.includes('serie-tv.html')) originPage = 'serie-tv';
-                            else if (p.includes('recensioni.html')) originPage = 'recensioni';
-                            else if (p.includes('classifiche.html')) originPage = 'classifiche';
-                            else if (p.includes('articoli.html')) {
-                                const filter = refUrl.searchParams.get('filter');
-                                originPage = filter ? `articoli-${filter}` : 'articoli';
-                            }
-                        } catch (e) {}
-                    }
+                if (!originPage && ref) {
+                    try {
+                        const refUrl = new URL(ref);
+                        const p = refUrl.pathname.toLowerCase();
+                        if (p.endsWith('index.html') || p === '/' || p.endsWith('/')) originPage = 'home';
+                        else if (p.includes('film.html')) originPage = 'film';
+                        else if (p.includes('serie-tv.html')) originPage = 'serie-tv';
+                        else if (p.includes('recensioni.html')) originPage = 'recensioni';
+                        else if (p.includes('classifiche.html')) originPage = 'classifiche';
+                        else if (p.includes('articoli.html')) {
+                            const filter = refUrl.searchParams.get('filter');
+                            originPage = filter ? `articoli-${filter}` : 'articoli';
+                        }
+                    } catch (e) {}
+                }
 
-                    if (originPage === 'home') {
-                        backUrl = 'index.html';
-                        backLabel = 'Torna alla Home';
-                        floatingLabel = 'Home';
-                    } else if (originPage === 'film') {
+                if (originPage === 'home') {
+                    backUrl = 'index.html';
+                    backLabel = 'Torna alla Home';
+                    floatingLabel = 'Home';
+                } else if (originPage === 'film') {
+                    backUrl = 'film.html';
+                    backLabel = 'Torna ai Film';
+                    floatingLabel = 'Film';
+                } else if (originPage === 'serie-tv') {
+                    backUrl = 'serie-tv.html';
+                    backLabel = 'Torna alle Serie TV';
+                    floatingLabel = 'Serie TV';
+                } else if (originPage === 'recensioni') {
+                    backUrl = 'recensioni.html';
+                    backLabel = 'Torna alle Recensioni';
+                    floatingLabel = 'Recensioni';
+                } else if (originPage === 'classifiche') {
+                    backUrl = 'classifiche.html';
+                    backLabel = 'Torna alle Classifiche';
+                    floatingLabel = 'Classifiche';
+                } else if (originPage === 'articoli-eventi') {
+                    backUrl = 'articoli.html?filter=eventi';
+                    backLabel = 'Torna agli Eventi';
+                    floatingLabel = 'Eventi';
+                } else if (originPage === 'articoli-news') {
+                    backUrl = 'articoli.html?filter=news';
+                    backLabel = 'Torna alle News';
+                    floatingLabel = 'News';
+                } else if (originPage === 'articoli') {
+                    backUrl = 'articoli.html';
+                    backLabel = 'Torna agli Articoli';
+                    floatingLabel = 'Articoli';
+                } else {
+                    // Fallback in base alla categoria dell'articolo se non c'è traccia della pagina di provenienza
+                    if (categoryRaw === 'film' || categoryRaw === 'cinema') {
                         backUrl = 'film.html';
                         backLabel = 'Torna ai Film';
                         floatingLabel = 'Film';
-                    } else if (originPage === 'serie-tv') {
+                    } else if (categoryRaw === 'serie-tv' || categoryRaw === 'serie tv' || categoryRaw === 'serie' || categoryRaw === 'tv') {
                         backUrl = 'serie-tv.html';
                         backLabel = 'Torna alle Serie TV';
                         floatingLabel = 'Serie TV';
-                    } else if (originPage === 'recensioni') {
-                        backUrl = 'recensioni.html';
-                        backLabel = 'Torna alle Recensioni';
-                        floatingLabel = 'Recensioni';
-                    } else if (originPage === 'classifiche') {
+                    } else if (categoryRaw === 'classifiche' || categoryRaw.includes('classific') || tagsRaw.includes('classific') || titleRaw.includes('classific') || titleRaw.includes('top 10') || titleRaw.includes('top 5')) {
                         backUrl = 'classifiche.html';
                         backLabel = 'Torna alle Classifiche';
                         floatingLabel = 'Classifiche';
-                    } else if (originPage === 'articoli-eventi') {
+                    } else if (categoryRaw === 'recensioni' || categoryRaw.includes('recensio') || hasRating) {
+                        backUrl = 'recensioni.html';
+                        backLabel = 'Torna alle Recensioni';
+                        floatingLabel = 'Recensioni';
+                    } else if (categoryRaw === 'eventi' || categoryRaw.includes('event') || categoryRaw.includes('festival')) {
                         backUrl = 'articoli.html?filter=eventi';
                         backLabel = 'Torna agli Eventi';
                         floatingLabel = 'Eventi';
-                    } else if (originPage === 'articoli-news') {
+                    } else if (categoryRaw === 'news' || categoryRaw.includes('news')) {
                         backUrl = 'articoli.html?filter=news';
                         backLabel = 'Torna alle News';
                         floatingLabel = 'News';
-                    } else if (originPage === 'articoli') {
-                        backUrl = 'articoli.html';
-                        backLabel = 'Torna agli Articoli';
-                        floatingLabel = 'Articoli';
                     } else {
-                        // Fallback in base alla categoria dell'articolo se non c'è traccia della pagina di provenienza
-                        if (categoryRaw === 'film' || categoryRaw === 'cinema') {
-                            backUrl = 'film.html';
-                            backLabel = 'Torna ai Film';
-                            floatingLabel = 'Film';
-                        } else if (categoryRaw === 'serie-tv' || categoryRaw === 'serie tv' || categoryRaw === 'serie' || categoryRaw === 'tv') {
-                            backUrl = 'serie-tv.html';
-                            backLabel = 'Torna alle Serie TV';
-                            floatingLabel = 'Serie TV';
-                        } else if (categoryRaw === 'classifiche' || categoryRaw.includes('classific') || tagsRaw.includes('classific') || titleRaw.includes('classific') || titleRaw.includes('top 10') || titleRaw.includes('top 5')) {
-                            backUrl = 'classifiche.html';
-                            backLabel = 'Torna alle Classifiche';
-                            floatingLabel = 'Classifiche';
-                        } else if (categoryRaw === 'recensioni' || categoryRaw.includes('recensio') || hasRating) {
-                            backUrl = 'recensioni.html';
-                            backLabel = 'Torna alle Recensioni';
-                            floatingLabel = 'Recensioni';
-                        } else if (categoryRaw === 'eventi' || categoryRaw.includes('event') || categoryRaw.includes('festival')) {
-                            backUrl = 'articoli.html?filter=eventi';
-                            backLabel = 'Torna agli Eventi';
-                            floatingLabel = 'Eventi';
-                        } else if (categoryRaw === 'news' || categoryRaw.includes('news')) {
-                            backUrl = 'articoli.html?filter=news';
-                            backLabel = 'Torna alle News';
-                            floatingLabel = 'News';
-                        } else {
-                            backUrl = 'index.html';
-                            backLabel = 'Torna alla Home';
-                            floatingLabel = 'Home';
-                        }
+                        backUrl = 'index.html';
+                        backLabel = 'Torna alla Home';
+                        floatingLabel = 'Home';
                     }
-
-                    const mainBackBtn = document.getElementById('article-back-button');
-                    const mainBackText = document.getElementById('article-back-text');
-                    const floatingBackBtn = document.getElementById('article-floating-back-btn');
-                    const floatingBackText = document.getElementById('article-floating-back-text');
-
-                    if (mainBackBtn) {
-                        mainBackBtn.href = backUrl;
-                        mainBackBtn.onclick = (e) => {
-                            if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
-                                e.preventDefault();
-                                window.history.back();
-                            }
-                        };
-                    }
-                    if (mainBackText) mainBackText.textContent = backLabel;
-                    if (floatingBackBtn) {
-                        floatingBackBtn.href = backUrl;
-                        floatingBackBtn.title = backLabel;
-                        floatingBackBtn.onclick = (e) => {
-                            if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
-                                e.preventDefault();
-                                window.history.back();
-                            }
-                        };
-                    }
-                    if (floatingBackText) floatingBackText.textContent = floatingLabel;
-
-                    // Render Article Header
-                    const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
-                    if (headerContainer) {
-                        const rawTitleFont = activeArt.title_font ? activeArt.title_font.replace(/['"]/g, '') : 'Cormorant Garamond';
-                        const titleFont = `'${rawTitleFont}', Georgia, serif`;
-                        const titleColor = activeArt.title_color || "#FFFFFF";
-
-                        const rawExcerptFont = activeArt.excerpt_font ? activeArt.excerpt_font.replace(/['"]/g, '') : 'Plus Jakarta Sans';
-                        const excerptFont = `'${rawExcerptFont}', sans-serif`;
-                        const excerptColor = activeArt.excerpt_color || "#D6D3DC";
-
-                        let excerptHtml = '';
-                        if (activeArt.excerpt) {
-                            excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont} !important; color:${excerptColor} !important; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
-                        }
-
-                        headerContainer.innerHTML = `
-                            <span class="category-tag"><span class="cat-dot"></span>${(activeArt.category || 'CINEMA').toUpperCase()}</span>
-                            <h1 class="article-title" style="font-family:${titleFont} !important; color:${titleColor} !important;">${activeArt.title}</h1>
-                            ${excerptHtml}
-                            <div class="meta-info article-meta">
-                                <span class="meta-item">
-                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
-                                    ${formatItalianDate(activeArt.date)}
-                                </span>
-                                <span class="meta-separator">•</span>
-                                <span class="meta-item">
-                                    <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                                    Redatto da <strong>${activeArt.author}</strong>
-                                </span>
-                                <span class="meta-separator">•</span>
-                                <span class="meta-item read-time-badge">${readTime} MIN LETTURA</span>
-                            </div>
-                        `;
-                    }
-
-                    // Backdrop and Hero Image
-                    const backdropImg = document.getElementById('article-backdrop-img');
-                    if (backdropImg) {
-                        backdropImg.src = activeArt.image || 'ASSETS/no_image.png';
-                    }
-                    const mainCoverImg = document.getElementById('article-main-cover-img');
-                    if (mainCoverImg) {
-                        mainCoverImg.src = activeArt.image || 'ASSETS/no_image.png';
-                        mainCoverImg.alt = activeArt.title;
-                    }
-
-                    // Article content
-                    const bodyDiv = document.querySelector('.article-body');
-                    if (bodyDiv) {
-                        bodyDiv.innerHTML = activeArt.content || '';
-
-                        // Trasforma automaticamente link a YouTube, Vimeo o file video in player video incorporati inline
-                        const extractYT = (url) => {
-                            if (!url) return '';
-                            const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/|live\/|.+&v=))([\w-]{11})/);
-                            return m ? m[1] : '';
-                        };
-
-                        const extractVimeo = (url) => {
-                            if (!url) return '';
-                            const m = url.match(/vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/);
-                            return m ? m[3] : '';
-                        };
-
-                        // Controllo e conversione di link isolati a video
-                        bodyDiv.querySelectorAll('a').forEach(link => {
-                            const href = (link.getAttribute('href') || '').trim();
-                            const text = (link.textContent || '').trim();
-                            const parentBlock = link.closest('p') || link.closest('div');
-                            const isIsolated = (href === text) || (parentBlock && parentBlock.textContent.trim() === text);
-
-                            const ytId = extractYT(href);
-                            if (ytId && isIsolated) {
-                                const videoWrapper = document.createElement('div');
-                                videoWrapper.className = 'video-container';
-                                videoWrapper.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-                                link.replaceWith(videoWrapper);
-                                return;
-                            }
-
-                            const vimeoId = extractVimeo(href);
-                            if (vimeoId && isIsolated) {
-                                const videoWrapper = document.createElement('div');
-                                videoWrapper.className = 'video-container';
-                                videoWrapper.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-                                link.replaceWith(videoWrapper);
-                                return;
-                            }
-
-                            if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(href) && isIsolated) {
-                                const vidEl = document.createElement('video');
-                                vidEl.controls = true;
-                                vidEl.playsInline = true;
-                                vidEl.preload = 'metadata';
-                                vidEl.src = href;
-                                link.replaceWith(vidEl);
-                                return;
-                            }
-
-                            link.setAttribute('target', '_blank');
-                            link.setAttribute('rel', 'noopener noreferrer');
-                        });
-
-                        // Assicura controlli e inline playback per tutti i tag video e iframe presenti
-                        bodyDiv.querySelectorAll('video').forEach(vid => {
-                            vid.controls = true;
-                            vid.playsInline = true;
-                            vid.setAttribute('preload', 'metadata');
-                        });
-
-                        bodyDiv.querySelectorAll('iframe').forEach(ifr => {
-                            ifr.setAttribute('allowfullscreen', 'true');
-                            ifr.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-                            if (!ifr.closest('.video-container')) {
-                                const container = document.createElement('div');
-                                container.className = 'video-container';
-                                ifr.parentNode.insertBefore(container, ifr);
-                                container.appendChild(ifr);
-                            }
-                        });
-
-                        if (activeArt.rating) {
-                            bodyDiv.innerHTML += `
-                                <div class="review-summary-card">
-                                    <div class="review-score-box">
-                                        <span class="score-label">VALUTAZIONE</span>
-                                        <div class="score-num">${activeArt.rating}</div>
-                                        <span class="score-scale">su 10</span>
-                                    </div>
-                                    <div class="review-aspects">
-                                        <h3>Il Verdetto della Redazione</h3>
-                                        <p>${activeArt.technical_judgment ? activeArt.technical_judgment : 'Un\'opera di rilievo che merita di essere vissuta appieno.'}</p>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    }
-
-                    // Author card box
-                    const authorBoxContainer = document.getElementById('article-author-box');
-                    if (authorBoxContainer) {
-                        let authorAvatarHtml = '';
-                        if (activeArt.profile_image) {
-                            authorAvatarHtml = `
-                                <img src="${activeArt.profile_image}" alt="${activeArt.author}" class="author-avatar-img">
-                            `;
-                        } else {
-                            const initials = (activeArt.author_avatar || activeArt.author || '').substring(0, 2).toUpperCase();
-                            authorAvatarHtml = `
-                                <div class="author-avatar-initials">${initials}</div>
-                            `;
-                        }
-                        const authorBio = activeArt.bio || 'Critico cinematografico e redattore per Ciak Mania Magazine.';
-
-                        authorBoxContainer.innerHTML = `
-                            <div class="article-author-box">
-                                ${authorAvatarHtml}
-                                <div class="author-info-content">
-                                    <span class="author-tagline">Profilo Redattore</span>
-                                    <h4>${activeArt.author}</h4>
-                                    <p>${authorBio}</p>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    // Render Comments
-                    const commentsContainer = document.getElementById('comments-container');
-                    if (commentsContainer) {
-                        if (comments.length === 0) {
-                            commentsContainer.innerHTML = `<p style="font-size:14px; color:var(--color-text-muted); font-style:italic;">Nessun commento approvato. Lascia il primo commento!</p>`;
-                        } else {
-                            commentsContainer.innerHTML = comments.map(c => `
-                                <div class="comment-item" style="border-bottom:1px solid var(--bg-tertiary); padding:16px 0;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                        <strong style="font-size:14px; color:var(--color-text-brand);">${c.author}</strong>
-                                        <span style="font-size:12px; color:var(--color-text-muted);">${c.date}</span>
-                                    </div>
-                                    <p style="font-size:14.5px; margin:0; line-height:1.5;">${c.text}</p>
-                                </div>
-                            `).join('');
-                        }
-                    }
-                } catch (err) {
-                    console.error('Errore durante il rendering dell\'articolo:', err);
                 }
-            } else {
-                const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
-                if (headerContainer) {
-                    headerContainer.innerHTML = `
-                        <span class="category-tag">ERRORE</span>
-                        <h1 class="article-title">Articolo non trovato</h1>
-                        <p style="text-align:center; margin-top:20px; color:#A5A2A9;">L'articolo richiesto non esiste o è stato rimosso.</p>
+
+                const mainBackBtn = document.getElementById('article-back-button');
+                const mainBackText = document.getElementById('article-back-text');
+                const floatingBackBtn = document.getElementById('article-floating-back-btn');
+                const floatingBackText = document.getElementById('article-floating-back-text');
+
+                if (mainBackBtn) {
+                    mainBackBtn.href = backUrl;
+                    mainBackBtn.onclick = (e) => {
+                        if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
+                            e.preventDefault();
+                            window.history.back();
+                        }
+                    };
+                }
+                if (mainBackText) mainBackText.textContent = backLabel;
+                if (floatingBackBtn) {
+                    floatingBackBtn.href = backUrl;
+                    floatingBackBtn.title = backLabel;
+                    floatingBackBtn.onclick = (e) => {
+                        if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
+                            e.preventDefault();
+                            window.history.back();
+                        }
+                    };
+                }
+                if (floatingBackText) floatingBackText.textContent = floatingLabel;
+
+                // Render Article Header
+                if (articleDetailContainer) {
+                    const rawTitleFont = activeArt.title_font ? activeArt.title_font.replace(/['"]/g, '') : 'Cormorant Garamond';
+                    const titleFont = `'${rawTitleFont}', Georgia, serif`;
+                    const titleColor = activeArt.title_color || "#FFFFFF";
+
+                    const rawExcerptFont = activeArt.excerpt_font ? activeArt.excerpt_font.replace(/['"]/g, '') : 'Plus Jakarta Sans';
+                    const excerptFont = `'${rawExcerptFont}', sans-serif`;
+                    const excerptColor = activeArt.excerpt_color || "#D6D3DC";
+
+                    let excerptHtml = '';
+                    if (activeArt.excerpt) {
+                        excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont} !important; color:${excerptColor} !important; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
+                    }
+
+                    articleDetailContainer.innerHTML = `
+                        <span class="category-tag"><span class="cat-dot"></span>${(activeArt.category || 'CINEMA').toUpperCase()}</span>
+                        <h1 class="article-title" style="font-family:${titleFont} !important; color:${titleColor} !important;">${activeArt.title}</h1>
+                        ${excerptHtml}
+                        <div class="meta-info article-meta">
+                            <span class="meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                                ${formatItalianDate(activeArt.date)}
+                            </span>
+                            <span class="meta-separator">•</span>
+                            <span class="meta-item">
+                                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                Redatto da <strong>${activeArt.author}</strong>
+                            </span>
+                            <span class="meta-separator">•</span>
+                            <span class="meta-item read-time-badge">${readTime} MIN LETTURA</span>
+                        </div>
                     `;
                 }
-            }
-        }).catch(err => {
-            console.error('Errore getArticleDetail:', err);
-            const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
-            if (headerContainer) {
-                headerContainer.innerHTML = `
-                    <span class="category-tag">ERRORE</span>
-                    <h1 class="article-title">Impossibile caricare l'articolo</h1>
-                    <p style="text-align:center; margin-top:20px; color:#A5A2A9;">Verifica la connessione internet e riprova.</p>
-                `;
+
+                // Backdrop and Hero Image
+                const backdropImg = document.getElementById('article-backdrop-img');
+                if (backdropImg) {
+                    backdropImg.src = activeArt.image || 'ASSETS/no_image.png';
+                }
+                const mainCoverImg = document.getElementById('article-main-cover-img');
+                if (mainCoverImg) {
+                    mainCoverImg.src = activeArt.image || 'ASSETS/no_image.png';
+                    mainCoverImg.alt = activeArt.title;
+                }
+
+                // Article content
+                const bodyDiv = document.querySelector('.article-body');
+                if (bodyDiv) {
+                    bodyDiv.innerHTML = activeArt.content || '';
+
+                    // Assicura che tutti i link all'interno del testo siano sempre cliccabili e si aprano in una nuova scheda
+                    bodyDiv.querySelectorAll('a').forEach(link => {
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('rel', 'noopener noreferrer');
+                    });
+
+                    if (activeArt.rating) {
+                        bodyDiv.innerHTML += `
+                            <div class="review-summary-card">
+                                <div class="review-score-box">
+                                    <span class="score-label">VALUTAZIONE</span>
+                                    <div class="score-num">${activeArt.rating}</div>
+                                    <span class="score-scale">su 10</span>
+                                </div>
+                                <div class="review-aspects">
+                                    <h3>Il Verdetto della Redazione</h3>
+                                    <p>${activeArt.technical_judgment ? activeArt.technical_judgment : 'Un\'opera di rilievo che merita di essere vissuta appieno.'}</p>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // Author card box
+                const authorBoxContainer = document.getElementById('article-author-box');
+                if (authorBoxContainer) {
+                    let authorAvatarHtml = '';
+                    if (activeArt.profile_image) {
+                        authorAvatarHtml = `
+                            <img src="${activeArt.profile_image}" alt="${activeArt.author}" class="author-avatar-img">
+                        `;
+                    } else {
+                        const initials = (activeArt.author_avatar || activeArt.author || '').substring(0, 2).toUpperCase();
+                        authorAvatarHtml = `
+                            <div class="author-avatar-initials">${initials}</div>
+                        `;
+                    }
+                    const authorBio = activeArt.bio || 'Critico cinematografico e redattore per Ciak Mania Magazine.';
+
+                    authorBoxContainer.innerHTML = `
+                        <div class="article-author-box">
+                            ${authorAvatarHtml}
+                            <div class="author-info-content">
+                                <span class="author-tagline">Profilo Redattore</span>
+                                <h4>${activeArt.author}</h4>
+                                <p>${authorBio}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+
+                // Render Comments
+                const commentsContainer = document.getElementById('comments-container');
+                if (commentsContainer) {
+                    if (comments.length === 0) {
+                        commentsContainer.innerHTML = `<p style="font-size:14px; color:var(--color-text-muted); font-style:italic;">Nessun commento approvato. Lascia il primo commento!</p>`;
+                    } else {
+                        commentsContainer.innerHTML = comments.map(c => `
+                            <div class="comment-item" style="border-bottom:1px solid var(--bg-tertiary); padding:16px 0;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                    <strong style="font-size:14px; color:var(--color-text-brand);">${c.author}</strong>
+                                    <span style="font-size:12px; color:var(--color-text-muted);">${c.date}</span>
+                                </div>
+                                <p style="font-size:14.5px; margin:0; line-height:1.5;">${c.text}</p>
+                            </div>
+                        `).join('');
+                    }
+                }
             }
         });
     }

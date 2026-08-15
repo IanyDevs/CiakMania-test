@@ -5161,7 +5161,7 @@
                 else if (trimmed.includes('youtube.com') || trimmed.includes('youtu.be')) {
                     const ytId = extractYouTubeVideoId(trimmed);
                     if (ytId) {
-                        innerVideoHtml = `<div class="video-container"><iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe></div>`;
+                        innerVideoHtml = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${ytId}" frameborder="0" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`;
                     } else {
                         showToast('Impossibile estrarre l\'ID del video YouTube. Verifica il link.');
                         return;
