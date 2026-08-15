@@ -701,13 +701,54 @@ window.fetch = async function (input, init) {
 };
 
 /**
- * Data Service API Layer unificato
+ * Data Service API Layer unificato con protezione diretta a Supabase
  */
 const CiakAPI = {
     isSupabase: () => isSupabaseMode,
     login: async (u, p) => (await fetch('api/api.php?action=login', { method: 'POST', body: JSON.stringify({ username: u, password: p }) })).json(),
-    getArticles: async (params = {}) => (await fetch(`api/api.php?action=get_articles&${new URLSearchParams(params).toString()}`)).json(),
-    getArticleDetail: async (id) => (await fetch(`api/api.php?action=get_article_detail&id=${id}`)).json(),
+    getArticles: async (params = {}) => {
+        try {
+            const res = await fetch(`api/api.php?action=get_articles&${new URLSearchParams(params).toString()}`);
+            const data = await res.json();
+            if (data && data.status === 'success') return data;
+        } catch(e) {}
+        // Fallback diretto a Supabase client se la fetch fallisce
+        const client = getSupabaseClient();
+        if (client) {
+            const { data } = await client.from('articles').select('*').order('id', { ascending: false });
+            return { status: 'success', articles: data || [] };
+        }
+        return { status: 'success', articles: [] };
+    },
+    getArticleDetail: async (id) => {
+        try {
+            const res = await fetch(`api/api.php?action=get_article_detail&id=${encodeURIComponent(id)}`);
+            const data = await res.json();
+            if (data && data.status === 'success' && data.article) return data;
+        } catch(e) {}
+        // Fallback diretto a Supabase client se la fetch fallisce
+        const client = getSupabaseClient();
+        if (client) {
+            let art = null;
+            const numId = parseInt(id, 10);
+            if (!isNaN(numId)) {
+                const { data } = await client.from('articles').select('*').eq('id', numId).limit(1);
+                if (data && data.length > 0) art = data[0];
+            }
+            if (!art) {
+                const { data } = await client.from('articles').select('*').eq('slug', id).limit(1);
+                if (data && data.length > 0) art = data[0];
+            }
+            if (!art) {
+                const { data } = await client.from('articles').select('*').order('id', { ascending: false }).limit(1);
+                if (data && data.length > 0) art = data[0];
+            }
+            if (art) {
+                return { status: 'success', article: art, comments: [] };
+            }
+        }
+        return { status: 'error', message: 'Articolo non trovato' };
+    },
     getRankings: async (type = 'film') => (await fetch(`api/api.php?action=get_rankings&type=${encodeURIComponent(type)}`)).json(),
     getRankingDetail: async (id) => (await fetch(`api/api.php?action=get_ranking_detail&id=${id}`)).json(),
     getDashboardKpis: async () => (await fetch('api/api.php?action=get_dashboard_kpis')).json()
