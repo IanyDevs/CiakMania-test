@@ -598,7 +598,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (floatingBackText) floatingBackText.textContent = floatingLabel;
 
                 // Render Article Header
-                if (articleDetailContainer) {
+                const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header') || articleDetailContainer;
+                if (headerContainer) {
                     const rawTitleFont = activeArt.title_font ? activeArt.title_font.replace(/['"]/g, '') : 'Cormorant Garamond';
                     const titleFont = `'${rawTitleFont}', Georgia, serif`;
                     const titleColor = activeArt.title_color || "#FFFFFF";
@@ -612,7 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont} !important; color:${excerptColor} !important; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
                     }
 
-                    articleDetailContainer.innerHTML = `
+                    headerContainer.innerHTML = `
                         <span class="category-tag"><span class="cat-dot"></span>${(activeArt.category || 'CINEMA').toUpperCase()}</span>
                         <h1 class="article-title" style="font-family:${titleFont} !important; color:${titleColor} !important;">${activeArt.title}</h1>
                         ${excerptHtml}
