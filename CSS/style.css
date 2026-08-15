@@ -715,7 +715,7 @@ main.container {
 }
 
 .ciak-mobile-title {
-    display: none;
+    display: none !important;
     font-family: var(--font-editorial);
     font-size: 32px;
     font-weight: 800;
