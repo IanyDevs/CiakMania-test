@@ -819,7 +819,36 @@ if (searchInputEl) {
     });
 }
 
-// Section Header Titles ready
+// Handwriting Script Titles Reveal Animation
+function initHandwritingTitles() {
+    const scriptElements = document.querySelectorAll('.ciak-editorial-heading .title-script');
+    
+    scriptElements.forEach(el => {
+        if (el.dataset.handwritingReady) return;
+        el.dataset.handwritingReady = 'true';
+        
+        const rawText = el.textContent.trim();
+        if (!rawText) return;
+        
+        el.innerHTML = rawText.split('').map((char, index) => {
+            if (char === ' ') return ' ';
+            return `<span class="ink-char" style="transition-delay: ${index * 65}ms;">${char}</span>`;
+        }).join('');
+    });
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('written');
+                obs.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.2 });
+
+    scriptElements.forEach(el => observer.observe(el));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // Inizializzazione leggera completata
+    initHandwritingTitles();
 });
+window.initHandwritingTitles = initHandwritingTitles;
