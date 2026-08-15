@@ -215,9 +215,21 @@ window.fetch = async function (input, init) {
             // 9. SAVE ARTICLE
             if (action === 'save_article') {
                 if (client) {
-                    const clean = { ...bodyData };
-                    const id = clean.id;
-                    delete clean.id;
+                    const clean = {};
+                    const id = bodyData.id;
+
+                    // Whitelist delle colonne standard supportate dalla tabella articles
+                    const allowedFields = [
+                        'title', 'category', 'rating', 'image', 'excerpt', 'content',
+                        'date', 'status', 'tags', 'keyword', 'slug', 'metaDesc',
+                        'views', 'comments', 'author', 'technical_judgment'
+                    ];
+
+                    allowedFields.forEach(field => {
+                        if (bodyData[field] !== undefined) {
+                            clean[field] = bodyData[field];
+                        }
+                    });
 
                     // Ensure rating is float or null
                     if (clean.rating !== undefined && clean.rating !== null && clean.rating !== '') {
@@ -226,7 +238,7 @@ window.fetch = async function (input, init) {
                         clean.rating = null;
                     }
 
-                    // Format tags as text / JSON string if needed
+                    // Format tags as text / JSON string
                     if (Array.isArray(clean.tags)) {
                         clean.tags = JSON.stringify(clean.tags);
                     }
