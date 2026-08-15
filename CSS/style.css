@@ -773,22 +773,23 @@ main.container {
     display: inline-block;
     position: relative;
     white-space: nowrap;
+    overflow: hidden;
+    vertical-align: bottom;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.ciak-editorial-heading .title-script .ink-char {
-    display: inline-block;
-    opacity: 0;
-    transform: translateY(4px) scale(0.85);
-    filter: blur(2px);
-    transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-                transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
-                filter 0.35s ease;
+.ciak-editorial-heading .title-script.written {
+    clip-path: inset(0 0% 0 0);
 }
 
-.ciak-editorial-heading .title-script.written .ink-char {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0px);
+@keyframes writePen {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+    100% {
+        clip-path: inset(0 0% 0 0);
+    }
 }
 
 .ciak-editorial-heading .title-accent-badge {

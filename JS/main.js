@@ -822,33 +822,26 @@ if (searchInputEl) {
 // Handwriting Script Titles Reveal Animation
 function initHandwritingTitles() {
     const scriptElements = document.querySelectorAll('.ciak-editorial-heading .title-script');
-    
-    scriptElements.forEach(el => {
-        if (el.dataset.handwritingReady) return;
-        el.dataset.handwritingReady = 'true';
-        
-        const rawText = el.textContent.trim();
-        if (!rawText) return;
-        
-        el.innerHTML = rawText.split('').map((char, index) => {
-            if (char === ' ') return ' ';
-            return `<span class="ink-char" style="transition-delay: ${index * 65}ms;">${char}</span>`;
-        }).join('');
-    });
+    if (scriptElements.length === 0) return;
 
-    const observer = new IntersectionObserver((entries, obs) => {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('written');
-                obs.unobserve(entry.target);
+                setTimeout(() => {
+                    entry.target.classList.add('written');
+                }, 150);
             }
         });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.1 });
 
-    scriptElements.forEach(el => observer.observe(el));
+    scriptElements.forEach(el => {
+        el.classList.remove('written');
+        observer.observe(el);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     initHandwritingTitles();
+    setTimeout(initHandwritingTitles, 400);
 });
 window.initHandwritingTitles = initHandwritingTitles;
