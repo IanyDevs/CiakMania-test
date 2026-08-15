@@ -440,8 +440,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.renderArticleCard = renderArticleCard;
 
     // --- DYNAMIC ARTICLE DETAIL PAGE (DUAL: MYSQL & SUPABASE) ---
-    const articleDetailContainer = document.querySelector('.article-header');
-    if (articleDetailContainer) {
+    const isArticlePage = document.querySelector('.article-fullscreen-experience') || document.querySelector('.article-reading-stream') || document.querySelector('.article-header');
+    if (isArticlePage) {
         const params = new URLSearchParams(window.location.search);
         let articleId = params.get('id');
         
@@ -597,7 +597,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (floatingBackText) floatingBackText.textContent = floatingLabel;
 
                     // Render Article Header
-                    if (articleDetailContainer) {
+                    const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
+                    if (headerContainer) {
                         const rawTitleFont = activeArt.title_font ? activeArt.title_font.replace(/['"]/g, '') : 'Cormorant Garamond';
                         const titleFont = `'${rawTitleFont}', Georgia, serif`;
                         const titleColor = activeArt.title_color || "#FFFFFF";
@@ -611,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             excerptHtml = `<p class="article-lead-excerpt" style="font-family:${excerptFont} !important; color:${excerptColor} !important; font-size:19px; line-height:1.6; max-width:820px; margin: 16px auto 0 auto; text-align:center; font-style:italic;">${activeArt.excerpt}</p>`;
                         }
 
-                        articleDetailContainer.innerHTML = `
+                        headerContainer.innerHTML = `
                             <span class="category-tag"><span class="cat-dot"></span>${(activeArt.category || 'CINEMA').toUpperCase()}</span>
                             <h1 class="article-title" style="font-family:${titleFont} !important; color:${titleColor} !important;">${activeArt.title}</h1>
                             ${excerptHtml}
@@ -783,8 +784,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Errore durante il rendering dell\'articolo:', err);
                 }
             } else {
-                if (articleDetailContainer) {
-                    articleDetailContainer.innerHTML = `
+                const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
+                if (headerContainer) {
+                    headerContainer.innerHTML = `
                         <span class="category-tag">ERRORE</span>
                         <h1 class="article-title">Articolo non trovato</h1>
                         <p style="text-align:center; margin-top:20px; color:#A5A2A9;">L'articolo richiesto non esiste o è stato rimosso.</p>
@@ -793,8 +795,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).catch(err => {
             console.error('Errore getArticleDetail:', err);
-            if (articleDetailContainer) {
-                articleDetailContainer.innerHTML = `
+            const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
+            if (headerContainer) {
+                headerContainer.innerHTML = `
                     <span class="category-tag">ERRORE</span>
                     <h1 class="article-title">Impossibile caricare l'articolo</h1>
                     <p style="text-align:center; margin-top:20px; color:#A5A2A9;">Verifica la connessione internet e riprova.</p>
