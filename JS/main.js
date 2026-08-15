@@ -440,10 +440,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.renderArticleCard = renderArticleCard;
 
     // --- DYNAMIC ARTICLE DETAIL PAGE (DUAL: MYSQL & SUPABASE) ---
-    const articleDetailContainer = document.querySelector('.article-header');
+    const articleDetailContainer = document.querySelector('.article-header') || document.getElementById('article-header-container');
     if (articleDetailContainer) {
         const params = new URLSearchParams(window.location.search);
-        let articleId = params.get('id');
+        let articleId = params.get('id') || params.get('slug');
         
         if (articleId) {
             loadArticleData(articleId);
@@ -461,8 +461,47 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadArticleData(id) {
         CiakAPI.getArticleDetail(id).then(data => {
             if (data && data.status === 'success' && data.article) {
-                const activeArt = data.article;
-                const comments = data.comments || [];
+                renderArticleView(data.article, data.comments || []);
+            } else {
+                // Secondary fallback: search through all articles in database
+                CiakAPI.getArticles().then(allData => {
+                    const arts = allData && allData.articles ? allData.articles : [];
+                    const matched = arts.find(a => String(a.id) === String(id) || a.slug === String(id) || String(a.id) === String(parseInt(id, 10)));
+                    if (matched) {
+                        renderArticleView(matched, []);
+                    } else if (arts.length > 0) {
+                        renderArticleView(arts[0], []);
+                    } else {
+                        showArticleNotFound();
+                    }
+                }).catch(() => showArticleNotFound());
+            }
+        }).catch(err => {
+            console.error('Errore getArticleDetail:', err);
+            CiakAPI.getArticles().then(allData => {
+                const arts = allData && allData.articles ? allData.articles : [];
+                const matched = arts.find(a => String(a.id) === String(id) || a.slug === String(id));
+                if (matched) {
+                    renderArticleView(matched, []);
+                } else {
+                    showArticleNotFound();
+                }
+            }).catch(() => showArticleNotFound());
+        });
+    }
+
+    function showArticleNotFound() {
+        const headerContainer = document.getElementById('article-header-container') || document.querySelector('.article-header');
+        if (headerContainer) {
+            headerContainer.innerHTML = `
+                <span class="category-tag">ATTENZIONE</span>
+                <h1 class="article-title">Articolo non trovato</h1>
+                <p style="text-align:center; color:var(--color-text-muted); margin-top:16px;">L'articolo richiesto non è presente o è stato rimosso.</p>
+            `;
+        }
+    }
+
+    function renderArticleView(activeArt, comments) {
                 
                 try {
                     document.title = `${activeArt.title} | Ciak Mania Magazine`;
@@ -718,25 +757,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         `).join('');
                     }
                 }
-            } else {
-                if (articleDetailContainer) {
-                    articleDetailContainer.innerHTML = `
-                        <span class="category-tag">ATTENZIONE</span>
-                        <h1 class="article-title">Articolo non trovato</h1>
-                        <p style="text-align:center; color:var(--color-text-muted); margin-top:16px;">L'articolo richiesto non è presente o è stato rimosso.</p>
-                    `;
-                }
-            }
-        }).catch(err => {
-            console.error('Errore getArticleDetail:', err);
-            if (articleDetailContainer) {
-                articleDetailContainer.innerHTML = `
-                    <span class="category-tag">ATTENZIONE</span>
-                    <h1 class="article-title">Impossibile caricare l'articolo</h1>
-                    <p style="text-align:center; color:var(--color-text-muted); margin-top:16px;">Verifica la connessione o ricarica la pagina.</p>
-                `;
-            }
-        });
     }
 
     // --- READING PROGRESS BAR ---

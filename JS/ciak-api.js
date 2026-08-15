@@ -445,13 +445,24 @@ window.fetch = async function (input, init) {
                             return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante l\'aggiornamento.' });
                         }
                     } else {
-                        const { data, error } = await client.from('articles').insert([clean]).select();
-                        if (!error && data && data.length > 0) {
-                            return makeJsonResponse({ status: 'success', message: 'Articolo creato!', article: data[0] });
+                        // Avoid articles_pkey sequence duplicate conflict
+                        const { data: maxRow } = await client.from('articles').select('id').order('id', { ascending: false }).limit(1);
+                        const nextId = (maxRow && maxRow.length > 0 && maxRow[0].id) ? (parseInt(maxRow[0].id, 10) + 1) : 1;
+
+                        const insertWithId = { id: nextId, ...clean };
+                        let insertRes = await client.from('articles').insert([insertWithId]).select();
+
+                        if (insertRes.error) {
+                            // Fallback standard insert without explicit id
+                            insertRes = await client.from('articles').insert([clean]).select();
                         }
-                        if (error) {
-                            console.error('Supabase insert error:', error);
-                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante l\'inserimento.' });
+
+                        if (!insertRes.error && insertRes.data && insertRes.data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo creato!', article: insertRes.data[0] });
+                        }
+                        if (insertRes.error) {
+                            console.error('Supabase insert error:', insertRes.error);
+                            return makeJsonResponse({ status: 'error', message: insertRes.error.message || 'Errore durante l\'inserimento.' });
                         }
                     }
                 }
