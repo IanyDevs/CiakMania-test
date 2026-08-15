@@ -414,13 +414,24 @@ window.fetch = async function (input, init) {
                             return makeJsonResponse({ status: 'error', message: error.message || 'Errore aggiornamento categoria' });
                         }
                     } else {
-                        const { data, error } = await client.from('categories').insert([catData]).select();
-                        if (!error && data && data.length > 0) {
-                            return makeJsonResponse({ status: 'success', message: 'Categoria creata!', category: data[0] });
+                        // Avoid categories_pkey duplicate sequence conflict
+                        const { data: maxRow } = await client.from('categories').select('id').order('id', { ascending: false }).limit(1);
+                        const nextId = (maxRow && maxRow.length > 0 && maxRow[0].id) ? (parseInt(maxRow[0].id, 10) + 1) : 1;
+
+                        const insertWithId = { id: nextId, ...catData };
+                        let insertRes = await client.from('categories').insert([insertWithId]).select();
+
+                        if (insertRes.error) {
+                            // Fallback standard insert without explicit id
+                            insertRes = await client.from('categories').insert([catData]).select();
                         }
-                        if (error) {
-                            console.error('Category insert error:', error);
-                            return makeJsonResponse({ status: 'error', message: error.message || 'Errore creazione categoria' });
+
+                        if (!insertRes.error && insertRes.data && insertRes.data.length > 0) {
+                            return makeJsonResponse({ status: 'success', message: 'Categoria creata!', category: insertRes.data[0] });
+                        }
+                        if (insertRes.error) {
+                            console.error('Category insert error:', insertRes.error);
+                            return makeJsonResponse({ status: 'error', message: insertRes.error.message || 'Errore creazione categoria' });
                         }
                     }
                 }
