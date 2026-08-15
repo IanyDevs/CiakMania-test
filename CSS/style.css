@@ -661,11 +661,31 @@ main.container {
     grid-template-columns: 2.2fr 1fr;
     gap: 48px;
     padding: 60px 0;
+    align-items: start;
 }
 
 .main-content-layout:not(:has(aside.sidebar)) {
     display: block;
     width: 100%;
+}
+
+/* Vertical Divider between Main Feed and Sidebar / Classifiche */
+.main-content-layout > aside.sidebar {
+    position: relative;
+    padding-left: 42px;
+    border-left: 1px solid rgba(235, 189, 34, 0.22);
+}
+
+.main-content-layout > aside.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -1px;
+    width: 2px;
+    height: 90px;
+    background: linear-gradient(180deg, #EBBD22 0%, #800270 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(235, 189, 34, 0.45);
 }
 
 /* Sections */
@@ -3268,6 +3288,15 @@ footer .logo-main span {
     .main-content-layout {
         grid-template-columns: 1fr;
         gap: 40px;
+    }
+    .main-content-layout > aside.sidebar {
+        padding-left: 0;
+        border-left: none;
+        padding-top: 30px;
+        border-top: 1px solid rgba(235, 189, 34, 0.22);
+    }
+    .main-content-layout > aside.sidebar::before {
+        display: none;
     }
     .share-bar-container {
         display: none;
