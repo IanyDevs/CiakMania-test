@@ -2657,16 +2657,16 @@ main.container {
 .review-summary-card {
     display: grid;
     grid-template-columns: 180px 1fr;
-    background: #121016 url('../ASSETS/cinema_grunge_texture.png') center/cover no-repeat;
+    background: linear-gradient(135deg, #18151D 0%, #0E0C12 100%);
     border-radius: 20px;
-    border: 1.5px solid rgba(235, 189, 34, 0.5);
+    border: 1.5px solid rgba(235, 189, 34, 0.4);
     overflow: hidden;
     margin: 50px 0;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 25px rgba(235, 189, 34, 0.15);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.6), 0 0 25px rgba(235, 189, 34, 0.1);
 }
 
 .review-score-box {
-    background: linear-gradient(135deg, #1F1728 0%, #0F0B14 100%);
+    background: linear-gradient(135deg, #221A2C 0%, #120D1A 100%);
     border-right: 1px solid rgba(235, 189, 34, 0.3);
     color: #FFFFFF;
     padding: 30px;
@@ -2727,13 +2727,14 @@ main.container {
 .article-author-box {
     margin-top: 50px;
     padding: 28px;
-    background: #121016 url('../ASSETS/cinema_grunge_texture.png') center/cover no-repeat;
+    background: linear-gradient(135deg, #18151D 0%, #0E0C12 100%);
     border-radius: 18px;
     border: 1px solid rgba(235, 189, 34, 0.35);
     display: flex;
     align-items: center;
     gap: 22px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .author-avatar-img {
@@ -2810,7 +2811,7 @@ main.container {
 }
 
 .comment-input-area {
-    background: #121016 url('../ASSETS/cinema_grunge_texture.png') center/cover no-repeat;
+    background: linear-gradient(135deg, #18151D 0%, #0E0C12 100%);
     padding: 32px;
     border-radius: 20px;
     border: 1px solid rgba(235, 189, 34, 0.35);
