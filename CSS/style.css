@@ -714,9 +714,29 @@ main.container {
     justify-content: center;
 }
 
+.ciak-mobile-title {
+    display: none;
+    font-family: var(--font-editorial);
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--color-text-main);
+    letter-spacing: -0.5px;
+    margin: 0;
+    line-height: 1.2;
+}
+
 @media (max-width: 768px) {
     .ciak-graphic-heading {
-        max-width: 290px;
+        display: none !important;
+    }
+    .ciak-mobile-title {
+        display: block !important;
+        font-family: var(--font-editorial) !important;
+        font-size: 28px !important;
+        font-weight: 800 !important;
+        color: var(--color-text-main) !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
     }
 }
 
