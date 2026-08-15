@@ -267,11 +267,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // 8. POPULATE HORIZONTAL PIÙ LETTI SECTION
+            // 8. POPULATE HORIZONTAL PIÙ LETTI / PIÙ VISTI SECTION (TOP 3 PIÙ VISTI)
             const classificheGrid = document.getElementById('classifiche-grid-container');
             if (classificheGrid) {
                 classificheGrid.innerHTML = '';
-                const popularArticles = [...publishedArticles].sort((a,b) => (b.views||0) - (a.views||0) || b.id - a.id).slice(0, 6);
+                // Ordinamento sincronizzato in tempo reale per numero di visualizzazioni reali (views)
+                const popularArticles = [...publishedArticles]
+                    .sort((a,b) => (parseInt(b.views, 10) || 0) - (parseInt(a.views, 10) || 0) || b.id - a.id)
+                    .slice(0, 3);
                 const piuLettiSection = classificheGrid.closest('.piu-letti-section-wrapper') || document.getElementById('piu-letti-section');
 
                 if (popularArticles.length === 0) {
@@ -279,12 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     if (piuLettiSection) piuLettiSection.style.display = 'block';
                     classificheGrid.innerHTML = popularArticles.map((art, idx) => `
-                        <div class="classifiche-ranking-card" onclick="window.location.href='articolo.html?id=${art.id}'">
+                        <div class="classifiche-ranking-card" onclick="window.location.href='articolo.html?id=${art.id}&from=home'">
                             <div class="classifiche-thumb-box">
                                 <img src="${art.image || 'ASSETS/no_image.png'}" alt="${art.title}" loading="lazy">
                             </div>
                             <div class="classifiche-card-info">
-                                <span class="category-tag-sm">${art.category.toUpperCase()}</span>
+                                <span class="category-tag-sm">${(art.category || 'CINEMA').toUpperCase()}</span>
                                 <h4>${art.title}</h4>
                             </div>
                             <div class="classifiche-rank-number">${idx + 1}</div>

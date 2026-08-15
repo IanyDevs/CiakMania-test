@@ -152,8 +152,12 @@ window.fetch = async function (input, init) {
                 if (client && id) {
                     const { data: art } = await client.from('articles').select('*').eq('id', id).single();
                     if (art) {
+                        // Increment view count in Supabase asynchronously
+                        const newViews = (parseInt(art.views, 10) || 0) + 1;
+                        client.from('articles').update({ views: newViews }).eq('id', id).then(() => {});
+
                         const { data: comms } = await client.from('comments').select('*').eq('articleTitle', art.title);
-                        return makeJsonResponse({ status: 'success', article: art, comments: comms || [] });
+                        return makeJsonResponse({ status: 'success', article: { ...art, views: newViews }, comments: comms || [] });
                     }
                 }
                 return makeJsonResponse({ status: 'error', message: 'Articolo non trovato' });

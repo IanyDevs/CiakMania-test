@@ -1576,8 +1576,14 @@ main.container {
 
 .classifiche-ranking-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+}
+
+@media (max-width: 992px) {
+    .classifiche-ranking-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .classifiche-ranking-card {
