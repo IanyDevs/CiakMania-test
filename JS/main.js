@@ -460,11 +460,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadArticleData(id) {
         CiakAPI.getArticleDetail(id).then(data => {
-            if (data && data.status === 'success') {
+            if (data && data.status === 'success' && data.article) {
                 const activeArt = data.article;
                 const comments = data.comments || [];
                 
-                document.title = `${activeArt.title} | Ciak Mania Magazine`;
+                try {
+                    document.title = `${activeArt.title} | Ciak Mania Magazine`;
+                } catch(e) {}
                 
                 // Calculate reading time estimate
                 const wordCount = (activeArt.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length;
@@ -715,6 +717,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         `).join('');
                     }
                 }
+            } else {
+                if (articleDetailContainer) {
+                    articleDetailContainer.innerHTML = `
+                        <span class="category-tag">ATTENZIONE</span>
+                        <h1 class="article-title">Articolo non trovato</h1>
+                        <p style="text-align:center; color:var(--color-text-muted); margin-top:16px;">L'articolo richiesto non è presente o è stato rimosso.</p>
+                    `;
+                }
+            }
+        }).catch(err => {
+            console.error('Errore getArticleDetail:', err);
+            if (articleDetailContainer) {
+                articleDetailContainer.innerHTML = `
+                    <span class="category-tag">ATTENZIONE</span>
+                    <h1 class="article-title">Impossibile caricare l'articolo</h1>
+                    <p style="text-align:center; color:var(--color-text-muted); margin-top:16px;">Verifica la connessione o ricarica la pagina.</p>
+                `;
             }
         });
     }
