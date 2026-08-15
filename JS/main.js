@@ -663,9 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     bodyDiv.querySelectorAll('a').forEach(link => {
                         const href = (link.getAttribute('href') || '').trim();
                         const text = (link.textContent || '').trim();
+                        const parentBlock = link.closest('p') || link.closest('div');
+                        const isIsolated = (href === text) || (parentBlock && parentBlock.textContent.trim() === text);
 
                         const ytId = extractYT(href);
-                        if (ytId && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                        if (ytId && isIsolated) {
                             const videoWrapper = document.createElement('div');
                             videoWrapper.className = 'video-container';
                             videoWrapper.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
@@ -674,7 +676,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
 
                         const vimeoId = extractVimeo(href);
-                        if (vimeoId && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                        if (vimeoId && isIsolated) {
                             const videoWrapper = document.createElement('div');
                             videoWrapper.className = 'video-container';
                             videoWrapper.innerHTML = `<iframe src="https://player.vimeo.com/video/${vimeoId}?dnt=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
@@ -682,7 +684,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             return;
                         }
 
-                        if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(href) && (href === text || link.closest('p, div')?.textContent.trim() === text)) {
+                        if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(href) && isIsolated) {
                             const vidEl = document.createElement('video');
                             vidEl.controls = true;
                             vidEl.playsInline = true;
