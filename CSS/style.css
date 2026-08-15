@@ -672,68 +672,53 @@ main.container {
 /* Vertical Divider between Main Feed and Sidebar / Classifiche */
 .main-content-layout > aside.sidebar {
     position: relative;
-    padding-left: 46px;
-    border-left: 2px solid #000000;
+    padding-left: 44px;
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
     height: 100%;
     min-height: 100%;
-    box-shadow: -1px 0 4px rgba(0, 0, 0, 0.08);
 }
 
 .main-content-layout > aside.sidebar::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -2px;
+    left: -1px;
     width: 2px;
-    height: 100%;
+    height: 80px;
     background: #000000;
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
 .main-content-layout > aside.sidebar::after {
-    content: '◆';
-    position: absolute;
-    top: -7px;
-    left: -6px;
-    font-size: 11px;
-    color: #000000;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+    display: none;
 }
 
 /* ==========================================================================
-   CIAK SLEEK BLACK HORIZONTAL SECTION DIVIDERS (Separatori Sezioni Neri)
+   CIAK MODERN MINIMAL HORIZONTAL DIVIDER
    ========================================================================== */
 .ciak-section-divider-h {
     position: relative;
     width: 100%;
-    height: 2px;
+    height: 1px;
     margin: 50px auto;
-    background: #000000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 2px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.2) 20%, rgba(0, 0, 0, 0.8) 50%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+    border: none;
 }
 
 .ciak-section-divider-h::before {
     content: '';
     position: absolute;
-    width: 160px;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
     height: 3px;
     background: #000000;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .ciak-section-divider-h::after {
-    content: '★  ★  ★';
-    position: absolute;
-    font-size: 8px;
-    letter-spacing: 4px;
-    color: #000000;
-    background: var(--bg-primary, #FAF9F6);
-    padding: 0 14px;
-    font-weight: 900;
+    display: none;
 }
 
 /* Sections */
