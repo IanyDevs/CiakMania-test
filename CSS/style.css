@@ -30,6 +30,10 @@
     box-sizing: border-box;
 }
 
+html {
+    background-color: #0F0C0F;
+}
+
 body {
     background-color: var(--bg-primary);
     color: var(--color-text-main);
@@ -37,6 +41,18 @@ body {
     line-height: 1.62;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
+    margin-top: auto;
 }
 
 a {
