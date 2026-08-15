@@ -171,9 +171,10 @@ window.fetch = async function (input, init) {
                         { id: 1, name: 'Film', slug: 'film', color: '#e50914', desc: 'Tutti i film e le ultime novita cinematografiche' },
                         { id: 2, name: 'Serie TV', slug: 'serie-tv', color: '#0070f3', desc: 'Recensioni e notizie sulle serie TV e streaming' },
                         { id: 3, name: 'Recensioni', slug: 'recensioni', color: '#ffb400', desc: 'Tutte le recensioni con voto e giudizio critico' },
-                        { id: 4, name: 'Articoli', slug: 'articoli', color: '#10b981', desc: 'Approfondimenti, speciali ed interviste' },
-                        { id: 5, name: 'Classifiche', slug: 'classifiche', color: '#ffa305', desc: 'Articoli in classifica' },
-                        { id: 6, name: 'News', slug: 'news', color: '#601f5e', desc: 'Le news inerenti al mondo del cinema' }
+                        { id: 4, name: 'Articoli', slug: 'articoli', color: '#10b981', desc: 'Approfondimenti, speciali ed editoriali' },
+                        { id: 5, name: 'Interviste', slug: 'interviste', color: '#BA2BB2', desc: 'Interviste esclusive con attori, registi e protagonisti' },
+                        { id: 6, name: 'Classifiche', slug: 'classifiche', color: '#ffa305', desc: 'Articoli in classifica' },
+                        { id: 7, name: 'News', slug: 'news', color: '#601f5e', desc: 'Le news inerenti al mondo del cinema' }
                     ]
                 });
             }

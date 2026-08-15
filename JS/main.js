@@ -252,6 +252,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // 7b. POPULATE INTERVISTE SECTION
+            const intervisteGrid = document.getElementById('interviste-grid-container');
+            if (intervisteGrid) {
+                intervisteGrid.innerHTML = '';
+                const interviewArticles = publishedArticles.filter(art => isInterview(art));
+                const intervisteSection = intervisteGrid.closest('.interviste-section-wrapper') || document.getElementById('interviste-section');
+
+                if (interviewArticles.length === 0) {
+                    if (intervisteSection) intervisteSection.style.display = 'none';
+                } else {
+                    if (intervisteSection) intervisteSection.style.display = 'block';
+                    interviewArticles.slice(0, 4).forEach(art => renderArticleCard(art, intervisteGrid));
+                }
+            }
+
             // 8. POPULATE HORIZONTAL PIÙ LETTI SECTION
             const classificheGrid = document.getElementById('classifiche-grid-container');
             if (classificheGrid) {
@@ -340,6 +355,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cat.includes('classific') || cat.includes('ranking') || cat.includes('top')) return true;
         if (tags.includes('classific') || tags.includes('ranking') || tags.includes('top')) return true;
         if (title.includes('classific') || title.includes('top 10') || title.includes('top 5') || title.includes('classifica')) return true;
+        return false;
+    }
+
+    function isInterview(art) {
+        if (!art) return false;
+        const cat = (art.category || '').toLowerCase();
+        const tags = (art.tags || '').toLowerCase();
+        const title = (art.title || '').toLowerCase();
+
+        if (cat === 'interviste' || cat.includes('intervist')) return true;
+        if (tags.includes('intervist') || tags.includes('interview')) return true;
+        if (title.includes('intervista') || title.includes('a tu per tu con')) return true;
         return false;
     }
 
