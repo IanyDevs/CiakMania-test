@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const mainArt = publishedArticles[0];
                 let featuredHTML = `
-                    <div class="featured-main" onclick="if(!event.target.closest('a')) window.location.href='articolo.html?id=${mainArt.id}'">
+                    <div class="featured-main" onclick="if(!event.target.closest('a')) window.location.href='articolo.html?id=${mainArt.id}&from=home'">
                         <img src="${mainArt.image || 'ASSETS/no_image.png'}" alt="${mainArt.title}">
                         <div class="featured-content">
                             <span class="category-tag">${mainArt.category.toUpperCase()}</span>
-                            <h2><a href="articolo.html?id=${mainArt.id}">${mainArt.title}</a></h2>
+                            <h2><a href="articolo.html?id=${mainArt.id}&from=home">${mainArt.title}</a></h2>
                             <p>${mainArt.excerpt || ''}</p>
-                            <a href="articolo.html?id=${mainArt.id}" class="read-btn">Leggi l'articolo</a>
+                            <a href="articolo.html?id=${mainArt.id}&from=home" class="read-btn">Leggi l'articolo</a>
                         </div>
                     </div>
                 `;
@@ -53,13 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     for (let i = 1; i < Math.min(3, publishedArticles.length); i++) {
                         const sideArt = publishedArticles[i];
                         featuredHTML += `
-                            <div class="side-card" onclick="if(!event.target.closest('a')) window.location.href='articolo.html?id=${sideArt.id}'">
+                            <div class="side-card" onclick="if(!event.target.closest('a')) window.location.href='articolo.html?id=${sideArt.id}&from=home'">
                                 <div class="side-card-img-wrapper">
                                     <img src="${sideArt.image || 'ASSETS/no_image.png'}" alt="${sideArt.title}">
                                 </div>
                                 <div class="side-card-content">
                                     <span class="category-tag">${sideArt.category.toUpperCase()}</span>
-                                    <h3><a href="articolo.html?id=${sideArt.id}">${sideArt.title}</a></h3>
+                                    <h3><a href="articolo.html?id=${sideArt.id}&from=home">${sideArt.title}</a></h3>
                                 </div>
                             </div>
                         `;
@@ -363,6 +363,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const readTime = Math.max(1, Math.ceil(wordCount / 180));
         const artImage = (art.image && art.image.trim() !== '') ? art.image : 'ASSETS/no_image.png';
 
+        const curPath = window.location.pathname.toLowerCase();
+        let curPage = 'home';
+        if (curPath.includes('film.html')) curPage = 'film';
+        else if (curPath.includes('serie-tv.html')) curPage = 'serie-tv';
+        else if (curPath.includes('recensioni.html')) curPage = 'recensioni';
+        else if (curPath.includes('classifiche.html')) curPage = 'classifiche';
+        else if (curPath.includes('articoli.html')) {
+            const urlP = new URLSearchParams(window.location.search);
+            const f = urlP.get('filter');
+            curPage = f ? `articoli-${f}` : 'articoli';
+        }
+
+        const articleHref = `articolo.html?id=${art.id}&from=${curPage}`;
+
         card.innerHTML = `
             <div class="card-poster-stage">
                 <img src="${artImage}" alt="${art.title}" loading="lazy" onerror="this.src='ASSETS/no_image.png'">
@@ -376,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="chronology-dot"></span>
                 <span class="chronology-read">${readTime} MIN LETTURA</span>
             </div>
-            <h3 class="card-headline"><a href="articolo.html?id=${art.id}">${art.title}</a></h3>
+            <h3 class="card-headline"><a href="${articleHref}">${art.title}</a></h3>
             <p class="card-synopsis">${art.excerpt || ''}</p>
             <div class="card-bottom-row">
                 <span class="card-read-more-link">
@@ -388,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         card.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
-            window.location.href = `articolo.html?id=${art.id}`;
+            window.location.href = articleHref;
         });
 
         container.appendChild(card);
@@ -426,87 +440,102 @@ document.addEventListener('DOMContentLoaded', () => {
                 const wordCount = (activeArt.content || '').replace(/<[^>]*>/g, '').split(/\s+/).length;
                 const readTime = Math.max(1, Math.ceil(wordCount / 180));
 
-                // Dynamic Back Button based on Category & Origin
+                // Dynamic Back Button based on Category & Origin (Home, Film, Serie TV, Recensioni, Articoli, Classifiche)
+                const urlParams = new URLSearchParams(window.location.search);
+                const fromParam = (urlParams.get('from') || '').toLowerCase().trim();
+
                 const categoryRaw = (activeArt.category || '').toLowerCase().trim();
                 const tagsRaw = (activeArt.tags || '').toLowerCase();
                 const titleRaw = (activeArt.title || '').toLowerCase();
                 const hasRating = activeArt.rating !== null && activeArt.rating !== '' && String(activeArt.rating).trim() !== '';
 
-                let backUrl = 'articoli.html';
-                let backLabel = 'Torna agli Articoli';
-                let floatingLabel = 'Articoli';
+                let backUrl = 'index.html';
+                let backLabel = 'Torna alla Home';
+                let floatingLabel = 'Home';
 
-                // Priorità assoluta alla categoria dell'articolo
-                if (categoryRaw === 'film' || categoryRaw === 'cinema') {
+                // 1. Priorità massima: parametro ?from= nell'URL o Referrer del browser
+                const ref = document.referrer || '';
+                let originPage = fromParam;
+
+                if (!originPage && ref) {
+                    try {
+                        const refUrl = new URL(ref);
+                        const p = refUrl.pathname.toLowerCase();
+                        if (p.endsWith('index.html') || p === '/' || p.endsWith('/')) originPage = 'home';
+                        else if (p.includes('film.html')) originPage = 'film';
+                        else if (p.includes('serie-tv.html')) originPage = 'serie-tv';
+                        else if (p.includes('recensioni.html')) originPage = 'recensioni';
+                        else if (p.includes('classifiche.html')) originPage = 'classifiche';
+                        else if (p.includes('articoli.html')) {
+                            const filter = refUrl.searchParams.get('filter');
+                            originPage = filter ? `articoli-${filter}` : 'articoli';
+                        }
+                    } catch (e) {}
+                }
+
+                if (originPage === 'home') {
+                    backUrl = 'index.html';
+                    backLabel = 'Torna alla Home';
+                    floatingLabel = 'Home';
+                } else if (originPage === 'film') {
                     backUrl = 'film.html';
                     backLabel = 'Torna ai Film';
                     floatingLabel = 'Film';
-                } else if (categoryRaw === 'serie-tv' || categoryRaw === 'serie tv' || categoryRaw === 'serie' || categoryRaw === 'tv') {
+                } else if (originPage === 'serie-tv') {
                     backUrl = 'serie-tv.html';
                     backLabel = 'Torna alle Serie TV';
                     floatingLabel = 'Serie TV';
-                } else if (categoryRaw === 'classifiche' || categoryRaw.includes('classific') || tagsRaw.includes('classific') || titleRaw.includes('classific') || titleRaw.includes('top 10') || titleRaw.includes('top 5')) {
+                } else if (originPage === 'recensioni') {
+                    backUrl = 'recensioni.html';
+                    backLabel = 'Torna alle Recensioni';
+                    floatingLabel = 'Recensioni';
+                } else if (originPage === 'classifiche') {
                     backUrl = 'classifiche.html';
                     backLabel = 'Torna alle Classifiche';
                     floatingLabel = 'Classifiche';
-                } else if (categoryRaw === 'recensioni' || categoryRaw.includes('recensio')) {
-                    backUrl = 'recensioni.html';
-                    backLabel = 'Torna alle Recensioni';
-                    floatingLabel = 'Recensioni';
-                } else if (categoryRaw === 'eventi' || categoryRaw.includes('event') || categoryRaw.includes('festival') || tagsRaw.includes('event') || tagsRaw.includes('festival')) {
+                } else if (originPage === 'articoli-eventi') {
                     backUrl = 'articoli.html?filter=eventi';
                     backLabel = 'Torna agli Eventi';
                     floatingLabel = 'Eventi';
-                } else if (categoryRaw === 'news' || categoryRaw.includes('news')) {
+                } else if (originPage === 'articoli-news') {
                     backUrl = 'articoli.html?filter=news';
                     backLabel = 'Torna alle News';
                     floatingLabel = 'News';
-                } else if (hasRating) {
-                    // Fallback solo se la categoria è generica ma c'è un voto
-                    backUrl = 'recensioni.html';
-                    backLabel = 'Torna alle Recensioni';
-                    floatingLabel = 'Recensioni';
-                }
-
-                // Se l'utente proviene da una pagina specifica del nostro sito, permetti il ritorno coerente
-                const ref = document.referrer;
-                if (ref && (ref.includes(window.location.hostname) || ref.includes('localhost') || ref.includes('127.0.0.1'))) {
-                    try {
-                        const refUrl = new URL(ref);
-                        const refPath = refUrl.pathname.toLowerCase();
-                        if (refPath.includes('recensioni.html')) {
-                            backUrl = 'recensioni.html';
-                            backLabel = 'Torna alle Recensioni';
-                            floatingLabel = 'Recensioni';
-                        } else if (refPath.includes('film.html')) {
-                            backUrl = 'film.html';
-                            backLabel = 'Torna ai Film';
-                            floatingLabel = 'Film';
-                        } else if (refPath.includes('serie-tv.html')) {
-                            backUrl = 'serie-tv.html';
-                            backLabel = 'Torna alle Serie TV';
-                            floatingLabel = 'Serie TV';
-                        } else if (refPath.includes('classifiche.html')) {
-                            backUrl = 'classifiche.html';
-                            backLabel = 'Torna alle Classifiche';
-                            floatingLabel = 'Classifiche';
-                        } else if (refPath.includes('articoli.html')) {
-                            const filter = refUrl.searchParams.get('filter');
-                            if (filter === 'eventi') {
-                                backUrl = 'articoli.html?filter=eventi';
-                                backLabel = 'Torna agli Eventi';
-                                floatingLabel = 'Eventi';
-                            } else if (filter === 'news') {
-                                backUrl = 'articoli.html?filter=news';
-                                backLabel = 'Torna alle News';
-                                floatingLabel = 'News';
-                            } else {
-                                backUrl = 'articoli.html';
-                                backLabel = 'Torna agli Articoli';
-                                floatingLabel = 'Articoli';
-                            }
-                        }
-                    } catch (e) {}
+                } else if (originPage === 'articoli') {
+                    backUrl = 'articoli.html';
+                    backLabel = 'Torna agli Articoli';
+                    floatingLabel = 'Articoli';
+                } else {
+                    // Fallback in base alla categoria dell'articolo se non c'è traccia della pagina di provenienza
+                    if (categoryRaw === 'film' || categoryRaw === 'cinema') {
+                        backUrl = 'film.html';
+                        backLabel = 'Torna ai Film';
+                        floatingLabel = 'Film';
+                    } else if (categoryRaw === 'serie-tv' || categoryRaw === 'serie tv' || categoryRaw === 'serie' || categoryRaw === 'tv') {
+                        backUrl = 'serie-tv.html';
+                        backLabel = 'Torna alle Serie TV';
+                        floatingLabel = 'Serie TV';
+                    } else if (categoryRaw === 'classifiche' || categoryRaw.includes('classific') || tagsRaw.includes('classific') || titleRaw.includes('classific') || titleRaw.includes('top 10') || titleRaw.includes('top 5')) {
+                        backUrl = 'classifiche.html';
+                        backLabel = 'Torna alle Classifiche';
+                        floatingLabel = 'Classifiche';
+                    } else if (categoryRaw === 'recensioni' || categoryRaw.includes('recensio') || hasRating) {
+                        backUrl = 'recensioni.html';
+                        backLabel = 'Torna alle Recensioni';
+                        floatingLabel = 'Recensioni';
+                    } else if (categoryRaw === 'eventi' || categoryRaw.includes('event') || categoryRaw.includes('festival')) {
+                        backUrl = 'articoli.html?filter=eventi';
+                        backLabel = 'Torna agli Eventi';
+                        floatingLabel = 'Eventi';
+                    } else if (categoryRaw === 'news' || categoryRaw.includes('news')) {
+                        backUrl = 'articoli.html?filter=news';
+                        backLabel = 'Torna alle News';
+                        floatingLabel = 'News';
+                    } else {
+                        backUrl = 'index.html';
+                        backLabel = 'Torna alla Home';
+                        floatingLabel = 'Home';
+                    }
                 }
 
                 const mainBackBtn = document.getElementById('article-back-button');
@@ -514,11 +543,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 const floatingBackBtn = document.getElementById('article-floating-back-btn');
                 const floatingBackText = document.getElementById('article-floating-back-text');
 
-                if (mainBackBtn) mainBackBtn.href = backUrl;
+                if (mainBackBtn) {
+                    mainBackBtn.href = backUrl;
+                    mainBackBtn.onclick = (e) => {
+                        if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
+                            e.preventDefault();
+                            window.history.back();
+                        }
+                    };
+                }
                 if (mainBackText) mainBackText.textContent = backLabel;
                 if (floatingBackBtn) {
                     floatingBackBtn.href = backUrl;
                     floatingBackBtn.title = backLabel;
+                    floatingBackBtn.onclick = (e) => {
+                        if (window.history.length > 1 && document.referrer && document.referrer.includes(window.location.hostname)) {
+                            e.preventDefault();
+                            window.history.back();
+                        }
+                    };
                 }
                 if (floatingBackText) floatingBackText.textContent = floatingLabel;
 
