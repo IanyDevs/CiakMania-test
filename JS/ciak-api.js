@@ -254,12 +254,31 @@ window.fetch = async function (input, init) {
                         clean.date = `${now.getDate()} ${monthsIt[now.getMonth()]} ${now.getFullYear()}`;
                     }
 
-                    // Ensure slug is present
-                    if (!clean.slug) {
-                        clean.slug = (clean.title || 'articolo')
-                            .toLowerCase()
-                            .replace(/[^a-z0-9]+/g, '-')
-                            .replace(/^-+|-+$/g, '') + '-' + Date.now();
+                    // Ensure slug is present and unique
+                    let baseSlug = (clean.slug || clean.title || 'articolo')
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '');
+                    if (!baseSlug) baseSlug = 'articolo';
+
+                    if (!id) {
+                        // Check if baseSlug already exists in database
+                        const { data: existingSlug } = await client.from('articles').select('id').eq('slug', baseSlug);
+                        if (existingSlug && existingSlug.length > 0) {
+                            // Append short timestamp / random suffix to guarantee uniqueness
+                            clean.slug = `${baseSlug}-${Date.now().toString(36)}`;
+                        } else {
+                            clean.slug = baseSlug;
+                        }
+                    } else {
+                        // When updating, check if slug is taken by another article
+                        const { data: existingSlug } = await client.from('articles').select('id').eq('slug', baseSlug).neq('id', id);
+                        if (existingSlug && existingSlug.length > 0) {
+                            clean.slug = `${baseSlug}-${Date.now().toString(36)}`;
+                        } else {
+                            clean.slug = baseSlug;
+                        }
                     }
 
                     if (id) {
