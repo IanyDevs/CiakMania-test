@@ -458,6 +458,73 @@ window.fetch = async function (input, init) {
                 return makeJsonResponse({ status: 'error', message: 'Connessione a Supabase non riuscita.' });
             }
 
+            // 9b. TRASH ARTICLE (MOVE TO TRASH)
+            if (action === 'trash_article') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    if (id) {
+                        const { error } = await client.from('articles').update({ status: 'cestino' }).eq('id', id);
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo spostato nel cestino' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante lo spostamento nel cestino' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'ID non valido' });
+            }
+
+            // 9c. RESTORE ARTICLE (FROM TRASH TO DRAFT)
+            if (action === 'restore_article') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    if (id) {
+                        const { error } = await client.from('articles').update({ status: 'bozza' }).eq('id', id);
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo ripristinato' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante il ripristino' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'ID non valido' });
+            }
+
+            // 9d. DELETE ARTICLE PERMANENTLY
+            if (action === 'delete_article_permanently') {
+                if (client) {
+                    const id = bodyData.id ? parseInt(bodyData.id, 10) : null;
+                    if (id) {
+                        const { error } = await client.from('articles').delete().eq('id', id);
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Articolo eliminato definitivamente' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore durante l\'eliminazione' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'ID non valido' });
+            }
+
+            // 9e. BULK ACTIONS ON ARTICLES
+            if (action === 'execute_bulk_action') {
+                if (client) {
+                    const ids = Array.isArray(bodyData.ids) ? bodyData.ids.map(i => parseInt(i, 10)).filter(i => !isNaN(i)) : [];
+                    const newStatus = bodyData.status || 'bozza';
+                    if (ids.length > 0) {
+                        let query;
+                        if (newStatus === 'elimina') {
+                            query = client.from('articles').delete().in('id', ids);
+                        } else {
+                            query = client.from('articles').update({ status: newStatus }).in('id', ids);
+                        }
+                        const { error } = await query;
+                        if (!error) {
+                            return makeJsonResponse({ status: 'success', message: 'Azione di gruppo completata' });
+                        }
+                        return makeJsonResponse({ status: 'error', message: error.message || 'Errore azione di gruppo' });
+                    }
+                }
+                return makeJsonResponse({ status: 'error', message: 'Nessun articolo selezionato' });
+            }
+
             // 10. SAVE CATEGORY (INSERT / UPDATE)
             if (action === 'save_category') {
                 if (client) {
