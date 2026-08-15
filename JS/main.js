@@ -826,6 +826,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- MOBILE ACCORDION / DROPDOWN TOGGLE ---
+    const mobileDropdownToggles = document.querySelectorAll('.mobile-dropdown-toggle');
+    mobileDropdownToggles.forEach(toggleBtn => {
+        toggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const parentItem = toggleBtn.closest('.mobile-dropdown-item');
+            if (parentItem) {
+                const isOpen = parentItem.classList.toggle('open');
+                toggleBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            }
+        });
+    });
+
     // --- NEWSLETTER INTEGRATION ---
     const newsForm = document.getElementById('homepage-newsletter-form');
     const newsMsg = document.getElementById('newsletter-status-msg');
